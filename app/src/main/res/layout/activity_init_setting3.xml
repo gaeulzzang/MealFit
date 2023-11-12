@@ -16,7 +16,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            app:title="당신을 위한 맞춤 설정">
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
@@ -29,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="영양 성분 비율을 정해주세요."
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="25dp"/>
@@ -45,7 +47,6 @@
                 android:text="탄수화물"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 android:layout_marginLeft="35dp"/>
             <ImageButton
                 android:id="@+id/minus1"
@@ -89,7 +90,6 @@
                 android:layout_height="60dp"
                 android:gravity="center"
                 android:text="단백질"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:layout_marginLeft="35dp"/>
@@ -135,7 +135,6 @@
                 android:layout_height="60dp"
                 android:gravity="center"
                 android:text="지방"
-                android:textStyle="bold"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:layout_marginLeft="35dp"/>
@@ -173,19 +172,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@android:drawable/ic_menu_info_details"
+            android:drawablePadding="10dp"
             android:drawableTint="@color/subTextColor"
             android:text="권장 영양 성분 섭취 비율은"
             android:textColor="@color/subTextColor"
             android:textSize="15sp"
             android:gravity="center"
-            android:layout_marginTop="130dp"/>
+            android:layout_marginTop="160dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="탄수화물 : 단백질 : 지방 = 5 : 3 : 2 예요."
             android:textColor="@color/subTextColor"
             android:textSize="15sp"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="40dp"/>
         <Button
             android:id="@+id/next_button"
             android:layout_width="match_parent"
@@ -194,6 +194,6 @@
             android:text="다음"
             android:textStyle="bold"
             android:textSize="25sp"
-            android:layout_marginTop="100dp"/>
+            android:layout_marginTop="70dp"/>
     </LinearLayout>
 </LinearLayout>
