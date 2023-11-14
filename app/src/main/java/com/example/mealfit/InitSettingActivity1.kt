@@ -3,9 +3,9 @@ package com.example.mealfit
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class MyPageActivity : AppCompatActivity() {
+class InitSettingActivity1 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my_page)
+        setContentView(R.layout.activity_init_setting1)
     }
 }
