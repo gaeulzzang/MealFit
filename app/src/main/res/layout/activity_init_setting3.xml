@@ -22,7 +22,8 @@
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:paddingLeft="35dp"
         android:paddingRight="35dp">
@@ -32,8 +33,8 @@
             android:text="영양 성분 비율을 정해주세요."
             android:textSize="20sp"
             android:textColor="@color/black"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"/>
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,7 +85,7 @@
             android:orientation="horizontal"
             android:background="@drawable/text_round"
             android:elevation="4dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="30dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
@@ -129,7 +130,7 @@
             android:orientation="horizontal"
             android:background="@drawable/text_round"
             android:elevation="4dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="30dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
@@ -178,22 +179,23 @@
             android:textColor="@color/subTextColor"
             android:textSize="15sp"
             android:gravity="center"
-            android:layout_marginTop="160dp"/>
+            android:layout_marginTop="110dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="탄수화물 : 단백질 : 지방 = 5 : 3 : 2 예요."
             android:textColor="@color/subTextColor"
             android:textSize="15sp"
-            android:layout_marginLeft="40dp"/>
+            android:layout_marginLeft="40dp"
+            android:layout_marginBottom="70dp"/>
         <Button
             android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_round"
+            android:layout_gravity="bottom"
             android:text="다음"
             android:textStyle="bold"
-            android:textSize="25sp"
-            android:layout_marginTop="70dp"/>
+            android:textSize="25sp" />
     </LinearLayout>
 </LinearLayout>

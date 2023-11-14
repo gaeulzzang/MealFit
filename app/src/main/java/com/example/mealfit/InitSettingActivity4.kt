@@ -21,8 +21,12 @@ class InitSettingActivity4 : AppCompatActivity() {
         binding.toolbar.navigationIcon?.setTint(resources.getColor(R.color.black))
 
         binding.nextButton.setOnClickListener{
-            startActivity(Intent(this, MyPageActivity::class.java))
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("previousActivity", "InitSettingActivity4")
+            startActivity(intent)
         }
+        // 탄수화물, 단백질, 지방, 총 열량 계산하는 로직 구현하기
+
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
