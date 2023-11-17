@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="exercise">
+        <item>거의 운동하지 않음</item>
+        <item>가벼운 활동(주 1~3회)</item>
+        <item>보통 활동(주 3~5회)</item>
+        <item>적극적인 활동(주 6~7회)</item>
+        <item>매우 적극적인 활동(주 7회)</item>
+    </string-array>
+</resources>
