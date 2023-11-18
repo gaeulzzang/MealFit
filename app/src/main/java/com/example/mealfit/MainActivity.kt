@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // 이전화면이 InitSettingActivity4일 경우 MyPageFragment로 이동
+        // 이전 화면이 InitSettingActivity4일 경우 MyPageFragment로 이동
         val previousActivity = intent.getStringExtra("previousActivity")
         Log.d("MainActivity", "previousActivity: $previousActivity")
         if(previousActivity == "InitSettingActivity4"){

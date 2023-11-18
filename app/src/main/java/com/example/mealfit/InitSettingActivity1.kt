@@ -1,11 +1,77 @@
 package com.example.mealfit
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Spinner
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import com.example.mealfit.databinding.ActivityInitSetting1Binding
+import com.example.mealfit.databinding.ActivityInitSetting3Binding
 
 class InitSettingActivity1 : AppCompatActivity() {
+    private lateinit var binding: ActivityInitSetting1Binding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_init_setting1)
+        val binding = ActivityInitSetting1Binding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.title = "당신을 위한 맞춤 설정"
+        binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black))
+        binding.toolbar.navigationIcon?.setTint(resources.getColor(R.color.black))
+
+        val inputGender: RadioGroup = findViewById(R.id.genderGroup)
+        val gender: String = when (inputGender.checkedRadioButtonId) {
+            R.id.male -> "남자"
+            R.id.female -> "여자"
+            else -> "여자" // default
+        }
+        val inputAge: EditText = findViewById(R.id.age)
+        val inputHeight: EditText = findViewById(R.id.height)
+        val inputWeight: EditText = findViewById(R.id.weight)
+        val inputExercise: Spinner = findViewById(R.id.exercise)
+        val exercise: String = inputExercise.selectedItem?.toString() ?: "거의 운동하지 않음" // default
+
+        binding.nextButton.setOnClickListener{
+            val age: String = inputAge.text.toString()
+            val height: String = inputHeight.text.toString()
+            val weight: String = inputWeight.text.toString()
+
+            if(age == "" || height == "" || weight == ""){ // 나이, 키, 몸무게를 입력하지 않았을 때
+                Toast.makeText(this, "입력하지 않은 내용이 있습니다", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                try {
+                    // 입력값을 Intent에 담아서 다음 액티비티로 전달
+                    val intent = Intent(this, InitSettingActivity2::class.java)
+                    intent.putExtra("gender", gender)
+                    intent.putExtra("age", age.toInt())
+                    intent.putExtra("height", height.toInt())
+                    intent.putExtra("weight", weight.toInt())
+                    intent.putExtra("exercise", exercise)
+                    startActivity(intent)
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(this, "올바른 숫자 형식으로 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            else -> {}
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="25dp"
+        android:text="영양 만점 메뉴 추천 서비스"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="30sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:text="더욱 더 맛있고 건강하게"
+        android:textColor="@color/subTextColor"
+        android:textSize="20sp"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="100dp"
+        android:hint="이메일"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:textSize="20sp"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="50dp"
+        android:hint="비밀번호(10자 이상)"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:textSize="20sp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_round"
+        android:layout_marginTop="90dp"
+        android:padding="15dp"
+        android:text="로그인"
+        android:textSize="20sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:text="아직 회원이 아니신가요?"
+        android:textColor="@color/subTextColor"
+        android:textSize="15sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/join"
+        android:textColor="@color/black"
+        android:textSize="15sp"/>
+</LinearLayout>

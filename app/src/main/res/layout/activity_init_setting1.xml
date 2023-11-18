@@ -50,6 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:hint="닉네임을 입력하세요"
+                android:inputType="text|textNoSuggestions"
+                android:maxLines="1"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -60,7 +62,6 @@
             android:columnCount="2">
 
             <LinearLayout android:orientation="vertical">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,11 +70,14 @@
                     android:textSize="20sp" />
 
                 <RadioGroup
+                    android:id="@+id/genderGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checkedButton="@id/female"
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/male"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginTop="20dp"
@@ -85,6 +89,7 @@
                         android:textSize="20sp" />
 
                     <RadioButton
+                        android:id="@+id/female"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_margin="20dp"
@@ -114,6 +119,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="                 세"
+                    android:inputType="number"
+                    android:maxLines="1"
                     android:textSize="20sp" />
             </LinearLayout>
 
@@ -134,6 +141,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="                 cm"
+                    android:inputType="number"
+                    android:maxLines="1"
                     android:textSize="20sp" />
             </LinearLayout>
 
@@ -155,6 +164,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="                 kg"
+                    android:inputType="number"
+                    android:maxLines="1"
                     android:textSize="20sp" />
             </LinearLayout>
         </GridLayout>
