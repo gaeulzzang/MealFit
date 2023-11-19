@@ -83,6 +83,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/totalCalorieAmount"
                 android:text="1500kcal"
                 android:textSize="20sp"
                 android:textColor="@color/black"
@@ -105,6 +106,7 @@
                 android:textColor="@color/black"
                 android:layout_gravity="center"/>
             <TextView
+                android:id="@+id/carbohydrateAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="100g"
@@ -129,6 +131,7 @@
                 android:textColor="@color/black"
                 android:layout_gravity="center"/>
             <TextView
+                android:id="@+id/proteinAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="60g"
@@ -153,6 +156,7 @@
                 android:textColor="@color/black"
                 android:layout_gravity="center"/>
             <TextView
+                android:id="@+id/fatAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="30g"

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.drawable.DrawableCompat.getColorFilter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -22,11 +23,14 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "Starting MyPageFragment")
             supportFragmentManager.beginTransaction().replace(R.id.containers, MyPageFragment()).commit()
             binding.bottomNavigation.selectedItemId = R.id.my_tab
-//            AlertDialog.Builder(this)
-//                .setTitle("맞춤 설정 완료")
-//                .setMessage("맞춤 설정이 완료되었습니다.")
-//                .setPositiveButton("확인") { _, _ -> }
-//                .show()
+            AlertDialog.Builder(this).run {
+                setTitle("맞춤 설정 완료")
+                val icon = resources.getDrawable(android.R.drawable.stat_notify_error, null)
+                icon.setTint(resources.getColor(R.color.black))
+                setIcon(icon)
+                setPositiveButton("확인", null)
+                show()
+            }
         }
         // 그 외의 경우 HomeFragment로 이동
         else {

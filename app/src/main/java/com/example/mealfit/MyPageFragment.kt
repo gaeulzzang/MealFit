@@ -31,6 +31,18 @@ class MyPageFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val binding = FragmentMyPageBinding.bind(view)
+        val carbohydrateAmount : String? = requireActivity().intent.getStringExtra("carbohydrateAmount")
+        val proteinAmount : String? = requireActivity().intent.getStringExtra("proteinAmount")
+        val fatAmount : String? = requireActivity().intent.getStringExtra("fatAmount")
+        val totalCalorieAmount : String? = requireActivity().intent.getStringExtra("totalCalorieAmount")
+        binding.totalCalorieAmount.text = totalCalorieAmount.toString()
+        binding.carbohydrateAmount.text = carbohydrateAmount.toString()
+        binding.proteinAmount.text = proteinAmount.toString()
+        binding.fatAmount.text = fatAmount.toString()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

@@ -13,6 +13,11 @@ class InitSettingActivity4 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityInitSetting4Binding.inflate(layoutInflater)
+        val carbohydrate : Int = intent.getIntExtra("carbohydrate", 5)
+        val protein : Int = intent.getIntExtra("protein", 3)
+        val fat : Int = intent.getIntExtra("fat", 2)
+        val intakeCalorie : Int = intent.getIntExtra("intakeCalorie", 0)
+
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -20,13 +25,21 @@ class InitSettingActivity4 : AppCompatActivity() {
         binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black))
         binding.toolbar.navigationIcon?.setTint(resources.getColor(R.color.black))
 
+        // 탄수화물, 단백질, 지방, 총 열량 계산하는 로직 구현하기
+        binding.carbohydrateAmount.text = (intakeCalorie*(carbohydrate/10)/4).toString() + "g"
+        binding.proteinAmount.text = (intakeCalorie*(protein/10)/4).toString() + " g"
+        binding.fatAmount.text = (intakeCalorie*(fat/10)/9).toString() + " g"
+        binding.totalCalorieAmount.text = intakeCalorie.toString() + " kcal"
+
         binding.nextButton.setOnClickListener{
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("previousActivity", "InitSettingActivity4")
+            intent.putExtra("carbohydrateAmount", binding.carbohydrateAmount.text.toString())
+            intent.putExtra("proteinAmount", binding.proteinAmount.text.toString())
+            intent.putExtra("fatAmount", binding.fatAmount.text.toString())
+            intent.putExtra("totalCalorieAmount", binding.totalCalorieAmount.text.toString())
             startActivity(intent)
         }
-        // 탄수화물, 단백질, 지방, 총 열량 계산하는 로직 구현하기
-
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

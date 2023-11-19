@@ -62,7 +62,9 @@ class InitSettingActivity2 : AppCompatActivity() {
         intakeCalorie.hint = recommendedIntakeCalorie.toString() + " kcal"
 
         binding.nextButton.setOnClickListener{
-            startActivity(Intent(this, InitSettingActivity3::class.java))
+            val intent = Intent(this, InitSettingActivity3::class.java)
+            intent.putExtra("intakeCalorie", intakeCalorie.text.toString().toInt())
+            startActivity(intent)
         }
     }
 }

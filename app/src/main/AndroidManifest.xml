@@ -14,31 +14,29 @@
         tools:targetApi="31">
         <activity
             android:name=".InitSettingActivity1"
-            android:exported="false" />
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".InitSettingActivity2"
-            android:exported="true" />
+            android:exported="true"
+            android:parentActivityName=".InitSettingActivity1" />
         <activity
             android:name=".InitSettingActivity3"
             android:exported="true"
-            android:parentActivityName=".InitSettingActivity2"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+            android:parentActivityName=".InitSettingActivity2">
         </activity>
         <activity
             android:name=".InitSettingActivity4"
             android:exported="true"
-            android:parentActivityName=".InitSettingActivity3"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:parentActivityName=".InitSettingActivity3" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:parentActivityName=".InitSettingActivity4"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:parentActivityName=".InitSettingActivity4">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
