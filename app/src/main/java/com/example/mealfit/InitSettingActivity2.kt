@@ -63,7 +63,11 @@ class InitSettingActivity2 : AppCompatActivity() {
 
         binding.nextButton.setOnClickListener{
             val intent = Intent(this, InitSettingActivity3::class.java)
-            intent.putExtra("intakeCalorie", intakeCalorie.text.toString().toInt())
+            if (intakeCalorie.text.toString() == "") {
+                intent.putExtra("intakeCalorie", recommendedIntakeCalorie)
+            } else {
+                intent.putExtra("intakeCalorie", intakeCalorie.text.toString().toInt())
+            }
             startActivity(intent)
         }
     }

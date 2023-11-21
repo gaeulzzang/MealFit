@@ -25,18 +25,22 @@ class InitSettingActivity4 : AppCompatActivity() {
         binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black))
         binding.toolbar.navigationIcon?.setTint(resources.getColor(R.color.black))
 
+        var carbohydrateAmount = binding.carbohydrateAmount
+        var proteinAmount = binding.proteinAmount
+        var fatAmount = binding.fatAmount
+
         // 탄수화물, 단백질, 지방, 총 열량 계산하는 로직 구현하기
-        binding.carbohydrateAmount.text = (intakeCalorie*(carbohydrate/10)/4).toString() + "g"
-        binding.proteinAmount.text = (intakeCalorie*(protein/10)/4).toString() + " g"
-        binding.fatAmount.text = (intakeCalorie*(fat/10)/9).toString() + " g"
+        carbohydrateAmount.text = Math.round((intakeCalorie * (carbohydrate * 0.1) / 4)).toString() + " g"
+        proteinAmount.text = Math.round((intakeCalorie * (protein * 0.1) / 4)).toString() + " g"
+        fatAmount.text = Math.round((intakeCalorie * (fat * 0.1) / 9)).toString() + " g"
         binding.totalCalorieAmount.text = intakeCalorie.toString() + " kcal"
 
         binding.nextButton.setOnClickListener{
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("previousActivity", "InitSettingActivity4")
-            intent.putExtra("carbohydrateAmount", binding.carbohydrateAmount.text.toString())
-            intent.putExtra("proteinAmount", binding.proteinAmount.text.toString())
-            intent.putExtra("fatAmount", binding.fatAmount.text.toString())
+            intent.putExtra("carbohydrateAmount", carbohydrateAmount.text.toString())
+            intent.putExtra("proteinAmount", proteinAmount.text.toString())
+            intent.putExtra("fatAmount", fatAmount.text.toString())
             intent.putExtra("totalCalorieAmount", binding.totalCalorieAmount.text.toString())
             startActivity(intent)
         }
