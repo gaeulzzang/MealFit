@@ -43,7 +43,7 @@ class InitSettingActivity1 : AppCompatActivity() {
             val age: String = inputAge.text.toString()
             val height: String = inputHeight.text.toString()
             val weight: String = inputWeight.text.toString()
-
+            val exercise: String = inputExercise.selectedItem?.toString() ?: "거의 운동하지 않음" // default
             if(age == "" || height == "" || weight == ""){ // 나이, 키, 몸무게를 입력하지 않았을 때
                 Toast.makeText(this, "입력하지 않은 내용이 있습니다", Toast.LENGTH_SHORT).show()
             }
