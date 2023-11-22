@@ -5,6 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mealfit.databinding.FragmentHomeBinding
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,13 +24,9 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private var currentDate = Calendar.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -34,26 +34,65 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        val menuInfo = mapOf(
+            "닭가슴살 샐러드" to mapOf(
+                "열량(kcal)" to 400,
+                "탄수화물(g)" to 50,
+                "단백질(g)" to 30,
+                "지방(g)" to 10
+            ),
+            "과일 스무디" to mapOf(
+                "열량(kcal)" to 200,
+                "탄수화물(g)" to 40,
+                "단백질(g)" to 2,
+                "지방(g)" to 1
+            ),
+            "참치 샌드위치" to mapOf(
+                "열량(kcal)" to 350,
+                "탄수화물(g)" to 45,
+                "단백질(g)" to 25,
+                "지방(g)" to 15
+            )
+        )
+        val binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
+        val layoutManager = LinearLayoutManager(activity)
+        val adapter = MyHomeAdapter(menuInfo)
+        binding.homeRecyclerView.layoutManager = layoutManager
+        binding.homeRecyclerView.adapter = adapter
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val toolbar = requireActivity().findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        toolbar.title = "오늘의 추천 식단"
+        toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        val date = requireActivity().findViewById<android.widget.TextView>(R.id.date)
+        date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        updateDate()
+        view.findViewById<android.widget.ImageButton>(R.id.arrow_left)?.setOnClickListener{
+            currentDate.add(Calendar.DATE, -1)
+            updateDate()
+        }
+        view.findViewById<android.widget.ImageButton>(R.id.arrow_right)?.setOnClickListener{
+            currentDate.add(Calendar.DATE, 1)
+            updateDate()
+        }
+    }
+    private fun updateDate(){
+        val month = currentDate.get(Calendar.MONTH) + 1
+        val day = currentDate.get(Calendar.DAY_OF_MONTH)
+        val dayOfWeek = when(currentDate.get(Calendar.DAY_OF_WEEK)){
+            1 -> "일"
+            2 -> "월"
+            3 -> "화"
+            4 -> "수"
+            5 -> "목"
+            6 -> "금"
+            7 -> "토"
+            else -> ""
+        }
+        val date = "${month}월 ${day}일 ${dayOfWeek}요일"
+        view?.findViewById<android.widget.TextView>(R.id.date)?.text = date
     }
 }
