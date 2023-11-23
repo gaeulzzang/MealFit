@@ -33,11 +33,22 @@ class InitSettingActivity1 : AppCompatActivity() {
             R.id.female -> "여자"
             else -> "여자" // default
         }
-        val inputAge: EditText = findViewById(R.id.age)
-        val inputHeight: EditText = findViewById(R.id.height)
-        val inputWeight: EditText = findViewById(R.id.weight)
-        val inputExercise: Spinner = findViewById(R.id.exercise)
-        val exercise: String = inputExercise.selectedItem?.toString() ?: "거의 운동하지 않음" // default
+        val inputAge: EditText = binding.age
+        //val inputAge: EditText = findViewById(R.id.age)
+        val inputHeight: EditText = binding.height
+        //val inputHeight: EditText = findViewById(R.id.height)
+        val inputWeight: EditText = binding.weight
+        //val inputWeight: EditText = findViewById(R.id.weight)
+        val inputExercise: Spinner = binding.exercise
+        var exercise = "거의 운동하지 않음"
+        inputExercise.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long){
+                exercise = parent.getItemAtPosition(position).toString()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                exercise = "거의 운동하지 않음"
+            }
+        }
 
         binding.nextButton.setOnClickListener{
             val age: String = inputAge.text.toString()

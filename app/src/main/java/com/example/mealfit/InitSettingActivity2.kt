@@ -42,10 +42,10 @@ class InitSettingActivity2 : AppCompatActivity() {
         val activityMetabolism: TextView = findViewById(R.id.activity_metabolism)
         val recommendedActivityMetabolism: Int = when (exercise) {
             "거의 운동하지 않음" -> (recommendedBasalMetabolism * 0.2).toInt()
-            "가벼운 활동을 1~3일/주" -> (recommendedBasalMetabolism * 0.375).toInt()
-            "주 3~5일 운동" -> (recommendedBasalMetabolism * 0.555).toInt()
-            "격심한 운동을 6~7일/주" -> (recommendedBasalMetabolism * 0.725).toInt()
-            "매일 격심한 운동" -> (recommendedBasalMetabolism * 0.9).toInt()
+            "가벼운 활동(주 1~3회)" -> (recommendedBasalMetabolism * 0.375).toInt()
+            "보통 활동(주 3~5회)" -> (recommendedBasalMetabolism * 0.555).toInt()
+            "적극적인 활동(주 6~7회)" -> (recommendedBasalMetabolism * 0.725).toInt()
+            "매우 적극적인 활동(주 7회)" -> (recommendedBasalMetabolism * 0.9).toInt()
             else -> (recommendedBasalMetabolism * 0.2).toInt() // default
         }
         activityMetabolism.text = recommendedActivityMetabolism.toString() + " kcal"
@@ -53,10 +53,10 @@ class InitSettingActivity2 : AppCompatActivity() {
         val intakeCalorie: EditText = findViewById(R.id.intake_calorie)
         val recommendedIntakeCalorie: Int = when (exercise) {
             "거의 운동하지 않음" -> (recommendedBasalMetabolism * 1.2).toInt()
-            "가벼운 활동을 1~3일/주" -> (recommendedBasalMetabolism * 1.375).toInt()
-            "주 3~5일 운동" -> (recommendedBasalMetabolism * 1.55).toInt()
-            "격심한 운동을 6~7일/주" -> (recommendedBasalMetabolism * 1.725).toInt()
-            "매일 격심한 운동" -> (recommendedBasalMetabolism * 1.9).toInt()
+            "가벼운 활동(주 1~3회)" -> (recommendedBasalMetabolism * 1.375).toInt()
+            "보통 활동(주 3~5회)" -> (recommendedBasalMetabolism * 1.55).toInt()
+            "적극적인 활동(주 6~7회)" -> (recommendedBasalMetabolism * 1.725).toInt()
+            "매우 적극적인 활동(주 7회)" -> (recommendedBasalMetabolism * 1.9).toInt()
             else -> (recommendedBasalMetabolism * 1.2).toInt() // default
         }
         intakeCalorie.hint = recommendedIntakeCalorie.toString() + " kcal"
