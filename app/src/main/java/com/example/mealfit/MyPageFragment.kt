@@ -20,20 +20,19 @@ private const val ARG_PARAM2 = "param2"
  */
 class MyPageFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var nickname: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            nickname = it.getString(ARG_NICKNAME)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentMyPageBinding.bind(view)
+
         val carbohydrateAmount : String? = requireActivity().intent.getStringExtra("carbohydrateAmount")
         val proteinAmount : String? = requireActivity().intent.getStringExtra("proteinAmount")
         val fatAmount : String? = requireActivity().intent.getStringExtra("fatAmount")
@@ -42,6 +41,9 @@ class MyPageFragment : Fragment() {
         binding.carbohydrateAmount.text = carbohydrateAmount.toString()
         binding.proteinAmount.text = proteinAmount.toString()
         binding.fatAmount.text = fatAmount.toString()
+        nickname?.let{
+            binding.nickname.text = nickname.toString()
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,22 +59,14 @@ class MyPageFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyPageFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyPageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        private const val ARG_NICKNAME = "nickname"
+        fun newInstance(nickname: String): MyPageFragment {
+            val fragment = MyPageFragment()
+            val args = Bundle()
+            args.putString(ARG_NICKNAME, nickname)
+            fragment.arguments = args
+            return fragment
+        }
+
     }
 }
