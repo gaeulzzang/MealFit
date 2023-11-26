@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="검색할 메뉴를 입력하세요"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"/>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/containers"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/menu_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/menu_recyclerview"/>
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="@color/white"
+        app:itemBackground="@color/white"
+        android:layout_gravity="bottom"
+
+        app:itemIconTint="@drawable/icon_color_selector"
+        app:itemIconSize="35dp"
+        app:itemTextColor="@drawable/icon_color_selector"
+        app:menu="@menu/menu_tab"
+        app:labelVisibilityMode="labeled">
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+</LinearLayout>
