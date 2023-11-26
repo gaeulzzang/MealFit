@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lunch_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/text_white_round"
+    android:elevation="10dp"
+    android:orientation="vertical"
+    android:paddingVertical="20dp"
+    android:paddingHorizontal="35dp"
+    android:layout_marginBottom="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="점심 식사"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginRight="20dp"/>
+        <TextView
+            android:id="@+id/lunch_calorie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="열량 400kcal"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:layout_marginRight="90dp"/>
+        <ImageButton
+            android:id="@+id/lunch_delete_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_notification_clear_all"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            app:tint="@color/subTextColor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_round"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:layout_marginBottom="15dp">
+        <TextView
+            android:id="@+id/lunch_carbohydrate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="탄수화물 50g"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/lunch_protein"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="단백질 30g"
+            android:layout_weight="1"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/lunch_fat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지방 10g"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lunchList_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+    </androidx.recyclerview.widget.RecyclerView>
+    <Button
+        android:id="@+id/lunch_add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="10dp"
+        android:background="@drawable/btn_round"
+        android:drawableLeft="@android:drawable/ic_input_add"
+        android:drawableTint="@color/subTextColor"
+        android:text="메뉴 추가하기"
+        android:textColor="@color/subTextColor"/>
+</LinearLayout>

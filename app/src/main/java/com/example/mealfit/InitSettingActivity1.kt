@@ -33,6 +33,7 @@ class InitSettingActivity1 : AppCompatActivity() {
             R.id.female -> "여자"
             else -> "여자" // default
         }
+        val nickname: EditText = binding.nickname
         val inputAge: EditText = binding.age
         //val inputAge: EditText = findViewById(R.id.age)
         val inputHeight: EditText = binding.height
@@ -51,6 +52,9 @@ class InitSettingActivity1 : AppCompatActivity() {
         }
 
         binding.nextButton.setOnClickListener{
+            val nickname: String = nickname.text.toString()
+            val fragment = MyPageFragment.newInstance(nickname)
+            supportFragmentManager.beginTransaction().replace(R.id.mypage_container, fragment).commit()
             val age: String = inputAge.text.toString()
             val height: String = inputHeight.text.toString()
             val weight: String = inputWeight.text.toString()
