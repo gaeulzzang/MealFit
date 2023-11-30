@@ -34,6 +34,7 @@ class InitSettingActivity1 : AppCompatActivity() {
             R.id.female -> "여자"
             else -> "여자" // default
         }
+        val nickname: EditText = binding.nickname
         val inputAge: EditText = binding.age
         val inputHeight: EditText = binding.height
         val inputWeight: EditText = binding.weight

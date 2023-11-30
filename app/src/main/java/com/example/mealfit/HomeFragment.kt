@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val menuInfo = mapOf(
+        var menuInfo = mapOf(
             "닭가슴살 샐러드" to mapOf(
                 "열량(kcal)" to 400,
                 "탄수화물(g)" to 50,
@@ -59,6 +59,7 @@ class HomeFragment : Fragment() {
         val adapter = MyHomeAdapter(menuInfo)
         binding.homeRecyclerView.layoutManager = layoutManager
         binding.homeRecyclerView.adapter = adapter
+
         return binding.root
     }
 
@@ -78,6 +79,16 @@ class HomeFragment : Fragment() {
             currentDate.add(Calendar.DATE, 1)
             updateDate()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val toolbar = requireActivity().findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        toolbar.title = "오늘의 추천 식단"
+        toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        val date = requireActivity().findViewById<android.widget.TextView>(R.id.date)
+        date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        updateDate()
     }
     private fun updateDate(){
         val month = currentDate.get(Calendar.MONTH) + 1
