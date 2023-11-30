@@ -1,6 +1,7 @@
 package com.example.mealfit
 
 import android.app.AlertDialog
+import android.health.connect.datatypes.MealType
 import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.util.Log
@@ -11,31 +12,17 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.FragmentListBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class ListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private var currentDate = Calendar.getInstance()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -135,139 +122,156 @@ class ListFragment : Fragment() {
 
         val breakfastLayoutManager = LinearLayoutManager(activity)
         binding.breakfastLayout.breakfastListRecyclerView.layoutManager = breakfastLayoutManager
-        val breakfastAdapter = BreakfastAdapter(breakfastList){
-            binding.breakfastLayout.breakfastLayout.visibility = View.GONE
-        }
+        val breakfastAdapter = BreakfastAdapter(breakfastList){updateSums()}
         binding.breakfastLayout.breakfastListRecyclerView.adapter = breakfastAdapter
         binding.breakfastLayout.breakfastListRecyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-
         val lunchLayoutManager = LinearLayoutManager(activity)
         binding.lunchLayout.lunchListRecyclerView.layoutManager = lunchLayoutManager
-        val lunchAdapter = LunchAdapter(lunchList){
-            binding.lunchLayout.lunchLayout.visibility = View.GONE
-        }
-        binding.lunchLayout.lunchListRecyclerView.adapter = lunchAdapter
+        binding.lunchLayout.lunchListRecyclerView.adapter = LunchAdapter(lunchList){updateSums()}
         binding.lunchLayout.lunchListRecyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-
         val dinnerLayoutManager = LinearLayoutManager(activity)
         binding.dinnerLayout.dinnerListRecyclerView.layoutManager = dinnerLayoutManager
-        val dinnerAdapter = DinnerAdapter(dinnerList){
-            binding.dinnerLayout.dinnerLayout.visibility = View.GONE
-        }
-        binding.dinnerLayout.dinnerListRecyclerView.adapter = dinnerAdapter
+        binding.dinnerLayout.dinnerListRecyclerView.adapter = DinnerAdapter(dinnerList){updateSums()}
         binding.dinnerLayout.dinnerListRecyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
 
         binding.breakfastLayout.breakfastDeleteBtn.setOnClickListener{
-            val alertDialogBuilder = AlertDialog.Builder(requireContext())
-            alertDialogBuilder.apply {
-                setTitle("아침 식사 삭제 확인")
-                setMessage("정말 삭제하시겠습니까?") // 사용자에게 표시할 메시지
-                setPositiveButton("네") { _, _ ->
-                    // '네'를 선택한 경우
-                    binding.breakfastLayout.breakfastLayout.visibility = View.GONE
-
-                    val adapter = binding.breakfastLayout.breakfastListRecyclerView.adapter as BreakfastAdapter
-                    adapter.clearData()
-                    adapter.notifyDataSetChanged()
-
-                    // 열량과 단백질 텍스트 갱신
-                    val calorieSum = breakfastList.values.sumBy { it["kcal"] as Int }
-                    val carbohydrateSum = breakfastList.values.sumBy { it["탄수화물(g)"] as Int }
-                    val proteinSum = breakfastList.values.sumBy { it["단백질(g)"] as Int }
-                    val fatSum = breakfastList.values.sumBy { it["지방(g)"] as Int }
-
-                    binding.breakfastLayout.breakfastCalorie.text = "열량 $calorieSum kcal"
-                    binding.breakfastLayout.breakfastCarbohydrate.text = "탄수화물 $carbohydrateSum g"
-                    binding.breakfastLayout.breakfastProtein.text = "단백질 $proteinSum g"
-                    binding.breakfastLayout.breakfastFat.text = "지방 $fatSum g"
-                }
-                setNegativeButton("아니오") { dialog, _ ->
-                    // '아니오'를 선택한 경우
-                    dialog.dismiss() // 다이얼로그 닫기
-                }
-                create().show() // 다이얼로그를 보여줍니다.
-            }
+            createDeleteConfirmationDialog(binding.breakfastLayout.breakfastLayout, "아침")
         }
+
         binding.lunchLayout.lunchDeleteBtn.setOnClickListener{
-            val alertDialogBuilder = AlertDialog.Builder(requireContext())
-            alertDialogBuilder.apply {
-                setTitle("점심 식사 삭제 확인")
-                setMessage("정말 삭제하시겠습니까?") // 사용자에게 표시할 메시지
-                setPositiveButton("네") { _, _ ->
-                    // '네'를 선택한 경우
-                    binding.lunchLayout.lunchLayout.visibility = View.GONE
-
-                    val adapter = binding.lunchLayout.lunchListRecyclerView.adapter as LunchAdapter
-                    adapter.clearData()
-                    adapter.notifyDataSetChanged()
-                }
-                setNegativeButton("아니오") { dialog, _ ->
-                    // '아니오'를 선택한 경우
-                    dialog.dismiss() // 다이얼로그 닫기
-                }
-                create().show() // 다이얼로그를 보여줍니다.
-            }
+            createDeleteConfirmationDialog(binding.lunchLayout.lunchLayout, "점심")
         }
+
         binding.dinnerLayout.dinnerDeleteBtn.setOnClickListener{
-            val alertDialogBuilder = AlertDialog.Builder(requireContext())
-            alertDialogBuilder.apply {
-                setTitle("저녁 식사 삭제 확인")
-                setMessage("정말 삭제하시겠습니까?") // 사용자에게 표시할 메시지
-                setPositiveButton("네") { _, _ ->
-                    // '네'를 선택한 경우
-                    binding.dinnerLayout.dinnerLayout.visibility = View.GONE
-
-                    val adapter = binding.dinnerLayout.dinnerListRecyclerView.adapter as DinnerAdapter
-                    adapter.clearData()
-                    adapter.notifyDataSetChanged()
-                }
-                setNegativeButton("아니오") { dialog, _ ->
-                    // '아니오'를 선택한 경우
-                    dialog.dismiss() // 다이얼로그 닫기
-                }
-                create().show() // 다이얼로그를 보여줍니다.
-            }
+            createDeleteConfirmationDialog(binding.dinnerLayout.dinnerLayout, "저녁")
         }
-        binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
-            // 아침 식사 추가
-            Toast.makeText(requireContext(), "아침 식사 추가", Toast.LENGTH_SHORT).show()
-        }
-        binding.lunchLayout.lunchAddBtn.setOnClickListener{
-            // 점심 식사 추가
-            Toast.makeText(requireContext(), "점심 식사 추가", Toast.LENGTH_SHORT).show()
-        }
-        binding.dinnerLayout.dinnerAddBtn.setOnClickListener{
-            // 저녁 식사 추가
-            Toast.makeText(requireContext(), "저녁 식사 추가", Toast.LENGTH_SHORT).show()
-        }
-
         return binding.root
     }
+    private fun createDeleteConfirmationDialog(layout: View, mealType: String) {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        alertDialogBuilder.apply {
+            setTitle("$mealType 식사 삭제 확인")
+            setMessage("정말 삭제하시겠습니까?") // 사용자에게 표시할 메시지
+            setPositiveButton("네") { _, _ ->
+                // '네'를 선택한 경우
+                layout.visibility = View.GONE
+                // 추가로 원하는 작업 수행 가능
+            }
+            setNegativeButton("아니오") { dialog, _ ->
+                // '아니오'를 선택한 경우
+                dialog.dismiss() // 다이얼로그 닫기
+            }
+            create().show() // 다이얼로그를 보여줍니다.
+        }
+    }
+    data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+    private fun calculateSum(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>): Quadruple<Int, Int, Int, Int> {
+        val mealList = when (adapter) {
+            is BreakfastAdapter -> adapter.breakfastList
+            is LunchAdapter -> adapter.lunchList
+            is DinnerAdapter -> adapter.dinnerList
+            else -> emptyMap()
+        }
 
+        val calorieSum = mealList.values.sumBy { it["kcal"] as Int }
+        val carbohydrateSum = mealList.values.sumBy { it["탄수화물(g)"] as Int }
+        val proteinSum = mealList.values.sumBy { it["단백질(g)"] as Int }
+        val fatSum = mealList.values.sumBy { it["지방(g)"] as Int }
+
+        return Quadruple(calorieSum, carbohydrateSum, proteinSum, fatSum)
+    }
+    private fun updateSums() {
+        val binding = FragmentListBinding.bind(requireView())
+        val breakfastAdapter = binding.breakfastLayout.breakfastListRecyclerView.adapter as BreakfastAdapter
+        val lunchAdapter = binding.lunchLayout.lunchListRecyclerView.adapter as LunchAdapter
+        val dinnerAdapter = binding.dinnerLayout.dinnerListRecyclerView.adapter as DinnerAdapter
+
+        val (breakfastCalorieSum, breakfastCarbohydrateSum, breakfastProteinSum, breakfastFatSum) =
+            breakfastAdapter?.let {calculateSum(it)}  ?: Quadruple(0, 0, 0, 0)
+        binding.breakfastLayout.breakfastCalorie.text = "열량 $breakfastCalorieSum kcal"
+        binding.breakfastLayout.breakfastCarbohydrate.text = "탄수화물 $breakfastCarbohydrateSum g"
+        binding.breakfastLayout.breakfastProtein.text = "단백질 $breakfastProteinSum g"
+        binding.breakfastLayout.breakfastFat.text = "지방 $breakfastFatSum g"
+
+        val (lunchCalorieSum, lunchCarbohydrateSum, lunchProteinSum, lunchFatSum) =
+            lunchAdapter?.let {calculateSum(it)}  ?: Quadruple(0, 0, 0, 0)
+        binding.lunchLayout.lunchCalorie.text = "열량 $lunchCalorieSum kcal"
+        binding.lunchLayout.lunchCarbohydrate.text = "탄수화물 $lunchCarbohydrateSum g"
+        binding.lunchLayout.lunchProtein.text = "단백질 $lunchProteinSum g"
+        binding.lunchLayout.lunchFat.text = "지방 $lunchFatSum g"
+
+        val (dinnerCalorieSum, dinnerCarbohydrateSum, dinnerProteinSum, dinnerFatSum) =
+            dinnerAdapter?.let {calculateSum(it)}  ?: Quadruple(0, 0, 0, 0)
+        binding.dinnerLayout.dinnerCalorie.text = "열량 $dinnerCalorieSum kcal"
+        binding.dinnerLayout.dinnerCarbohydrate.text = "탄수화물 $dinnerCarbohydrateSum g"
+        binding.dinnerLayout.dinnerProtein.text = "단백질 $dinnerProteinSum g"
+        binding.dinnerLayout.dinnerFat.text = "지방 $dinnerFatSum g"
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbar = requireActivity().findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        toolbar.title = "식사 기록"
-        toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-        val date = requireActivity().findViewById<android.widget.TextView>(R.id.date)
-        date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        val binding = FragmentListBinding.bind(view)
+        binding.toolbar.title = "식사 기록"
+        binding.toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        binding.date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         updateDate()
-        view.findViewById<android.widget.ImageButton>(R.id.arrow_left)?.setOnClickListener{
+        binding.arrowLeft?.setOnClickListener{
             currentDate.add(Calendar.DATE, -1)
             updateDate()
         }
-        view.findViewById<android.widget.ImageButton>(R.id.arrow_right)?.setOnClickListener{
+        binding.arrowRight?.setOnClickListener{
             currentDate.add(Calendar.DATE, 1)
             updateDate()
+        }
+        binding.addMealFab.setOnClickListener{
+            val items = arrayOf<String>("아침", "점심", "저녁")
+            AlertDialog.Builder(requireContext()).run{
+                setTitle("식사 추가하기")
+                setItems(items){ _, which ->
+                    when(which){
+                        0 -> {
+                            if (binding.breakfastLayout.breakfastLayout.visibility != View.VISIBLE) {
+                                Toast.makeText(requireContext(), "아침 식사 추가", Toast.LENGTH_SHORT).show()
+                                binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
+                            } else {
+                                Toast.makeText(requireContext(), "이미 아침 식사가 존재합니다", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        1 -> {
+                            if (binding.lunchLayout.lunchLayout.visibility != View.VISIBLE) {
+                                Toast.makeText(requireContext(), "점심 식사 추가", Toast.LENGTH_SHORT).show()
+                                binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
+                            } else {
+                                Toast.makeText(requireContext(), "이미 점심 식사가 존재합니다", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        2 -> {
+                            if (binding.dinnerLayout.dinnerLayout.visibility != View.VISIBLE) {
+                                Toast.makeText(requireContext(), "저녁 식사 추가", Toast.LENGTH_SHORT).show()
+                                binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
+                            } else {
+                                Toast.makeText(requireContext(), "이미 저녁 식사가 존재합니다", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    // 적어도 하나가 visible이면 empty_text를 gone으로 설정
+                        if(binding.breakfastLayout.breakfastLayout.visibility == View.VISIBLE ||
+                            binding.lunchLayout.lunchLayout.visibility == View.VISIBLE ||
+                            binding.dinnerLayout.dinnerLayout.visibility == View.VISIBLE){
+                            binding.emptyText.visibility = View.GONE
+                        } else{
+                            binding.emptyText.visibility = View.VISIBLE
+                        }
+                }
+                show()
+            }
         }
     }
     override fun onResume() {
         super.onResume()
-        val toolbar = requireActivity().findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
-        toolbar.title = "식사 기록"
-        toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-        val date = requireActivity().findViewById<android.widget.TextView>(R.id.date)
-        date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        val binding = FragmentListBinding.bind(requireView())
+        binding.toolbar.title = "식사 기록"
+        binding.toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        binding.date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         updateDate()
     }
     private fun updateDate(){
@@ -285,15 +289,5 @@ class ListFragment : Fragment() {
         }
         val date = "${month}월 ${day}일 ${dayOfWeek}요일"
         view?.findViewById<android.widget.TextView>(R.id.date)?.text = date
-    }
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
