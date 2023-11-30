@@ -19,7 +19,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="당신을 위한 맞춤 설정"></androidx.appcompat.widget.Toolbar>
+            app:title="당신을 위한 맞춤 설정"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout

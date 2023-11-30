@@ -1,7 +1,9 @@
 package com.example.mealfit
 
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -41,9 +43,14 @@ class MyPageFragment : Fragment() {
         binding.carbohydrateAmount.text = carbohydrateAmount.toString()
         binding.proteinAmount.text = proteinAmount.toString()
         binding.fatAmount.text = fatAmount.toString()
-        nickname?.let{
-            binding.nickname.text = nickname.toString()
-        }
+
+        val sharedPreference = requireContext().getSharedPreferences("user info", MODE_PRIVATE)
+        val nickname = sharedPreference.getString("nickname", "")
+        val age = sharedPreference.getString("age", "")
+        val height = sharedPreference.getString("height", "")
+        val weight = sharedPreference.getString("weight", "")
+        binding.nickname.text = nickname
+        binding.ageHeightWeight.text = age + "세 / " + height + "cm / " + weight + "kg"
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
