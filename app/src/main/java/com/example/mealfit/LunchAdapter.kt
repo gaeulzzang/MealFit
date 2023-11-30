@@ -8,8 +8,8 @@ import com.example.mealfit.databinding.ListRecyclerviewBinding
 class LunchViewHolder(val binding: ListRecyclerviewBinding) :
     RecyclerView.ViewHolder(binding.root){
 }
-class LunchAdapter(private val lunchList: MutableMap<String, MutableMap<String, Int>>,
-    private val onListEmptyCallback: () -> Unit):
+class LunchAdapter(public val lunchList: MutableMap<String, MutableMap<String, Int>>,
+                   private val onUpdateSums: () -> Unit):
 RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun getItemCount(): Int = lunchList.size
 
@@ -26,14 +26,9 @@ RecyclerView.Adapter<RecyclerView.ViewHolder>(){
             binding.menuCalorie.text = lunchList[key]?.get("kcal").toString() + "kcal"
             binding.menuDeleteBtn.setOnClickListener{
                 lunchList.remove(key)
-                notifyItemRemoved(position)
+                notifyDataSetChanged()
+                onUpdateSums.invoke()
             }
         }
-    }
-    fun clearData(){
-        val wasEmpty = lunchList.isEmpty()
-        lunchList.clear()
-        notifyDataSetChanged()
-        onListEmptyCallback.invoke()
     }
 }
