@@ -9,8 +9,8 @@ class DinnerViewHolder(val binding: ListRecyclerviewBinding):
     RecyclerView.ViewHolder(binding.root){
 
     }
-class DinnerAdapter(private val dinnerList: MutableMap<String, MutableMap<String, Int>>,
-    private val onListEmptyCallback: () -> Unit):
+class DinnerAdapter(public val dinnerList: MutableMap<String, MutableMap<String, Int>>,
+                    private val onUpdateSums: () -> Unit):
 RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun getItemCount(): Int = dinnerList.size
 
@@ -27,18 +27,9 @@ RecyclerView.Adapter<RecyclerView.ViewHolder>(){
             binding.menuCalorie.text = dinnerList[key]?.get("kcal").toString() + "kcal"
             binding.menuDeleteBtn.setOnClickListener{
                 dinnerList.remove(key)
-                notifyItemRemoved(position)
-
-                if (dinnerList.isEmpty()) { // 리스트가 비었으면 처리
-                    onListEmptyCallback.invoke()
-                }
+                notifyDataSetChanged()
+                onUpdateSums.invoke()
             }
         }
-    }
-    fun clearData(){
-        val wasEmpty = dinnerList.isEmpty()
-        dinnerList.clear()
-        notifyDataSetChanged()
-        onListEmptyCallback.invoke()
     }
 }
