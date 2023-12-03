@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="wrap_content"
+    android:elevation="10dp"
+    android:background="@drawable/text_white_round"
+    android:padding="20dp"
+    android:layout_margin="20dp">
 
     <TextView
         android:id="@+id/menu_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="10dp"
+        android:paddingHorizontal="10dp"
         android:text="닭가슴살"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         android:textStyle="bold"/>
     <TextView
         android:id="@+id/menu_size"
@@ -19,17 +26,23 @@
         android:layout_marginRight="20dp"
         android:layout_weight="1"
         android:text="200g"
+        android:textSize="15sp"
         android:textColor="@color/subTextColor" />
     <TextView
         android:id="@+id/menu_calorie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="20dp"
-        android:text="300kcal"/>
-    <Button
+        android:text="300kcal"
+        android:textSize="15sp"/>
+
+    <ImageButton
+        android:layout_gravity="center"
         android:id="@+id/menu_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/mainColor"
-        android:text="+"/>
+        app:tint="@color/subTextColor"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_input_add" />
 </LinearLayout>

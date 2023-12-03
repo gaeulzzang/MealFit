@@ -1,6 +1,7 @@
 package com.example.mealfit
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.util.Log
@@ -228,10 +229,12 @@ class ListFragment : Fragment() {
                 create().show() // 다이얼로그를 보여줍니다.
             }
         }
+
         binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
-            // 아침 식사 추가
-            Toast.makeText(requireContext(), "아침 식사 추가", Toast.LENGTH_SHORT).show()
+            val intent = Intent(activity, SearchRecord::class.java)
+            startActivity(intent)
         }
+
         binding.lunchLayout.lunchAddBtn.setOnClickListener{
             // 점심 식사 추가
             Toast.makeText(requireContext(), "점심 식사 추가", Toast.LENGTH_SHORT).show()

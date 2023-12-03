@@ -17,12 +17,16 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="?android:attr/homeAsUpIndicator"
+            app:contentInsetStartWithNavigation="0dp"
+            app:contentInsetStart="0dp">
             <EditText
                 android:id="@+id/editTextSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="검색할 메뉴를 입력하세요"
+                android:textColorHint="@color/subTextColor"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"/>
