@@ -1,6 +1,7 @@
 package com.example.mealfit
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.health.connect.datatypes.MealType
 import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
@@ -29,6 +30,13 @@ class ListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentListBinding.inflate(layoutInflater, container, false)
+
+        // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
+        binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
+            val intent = Intent(requireContext(), SearchRecord::class.java)
+            startActivity(intent)
+        }
+
         var breakfastList = mutableMapOf(
             "백미밥" to mutableMapOf(
                 "g" to 300,
@@ -56,6 +64,12 @@ class ListFragment : Fragment() {
         binding.breakfastLayout.breakfastCarbohydrate.text = "탄수화물 " + breakfastList.values.sumBy { it["탄수화물(g)"] as Int }.toString() + "g"
         binding.breakfastLayout.breakfastProtein.text = "단백질 " + breakfastList.values.sumBy { it["단백질(g)"] as Int }.toString() + "g"
         binding.breakfastLayout.breakfastFat.text = "지방 " + breakfastList.values.sumBy { it["지방(g)"] as Int }.toString() + "g"
+
+        // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
+        binding.lunchLayout.lunchAddBtn.setOnClickListener{
+            val intent = Intent(requireContext(), SearchRecord::class.java)
+            startActivity(intent)
+        }
 
         var lunchList = mutableMapOf(
             "닭가슴살 샐러드" to mutableMapOf(
@@ -91,6 +105,12 @@ class ListFragment : Fragment() {
         binding.lunchLayout.lunchCarbohydrate.text = "탄수화물 " + lunchList.values.sumBy { it["탄수화물(g)"] as Int }.toString() + "g"
         binding.lunchLayout.lunchProtein.text = "단백질 " + lunchList.values.sumBy { it["단백질(g)"] as Int }.toString() + "g"
         binding.lunchLayout.lunchFat.text = "지방 " + lunchList.values.sumBy { it["지방(g)"] as Int }.toString() + "g"
+
+        // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
+        binding.dinnerLayout.dinnerAddBtn.setOnClickListener{
+            val intent = Intent(requireContext(), SearchRecord::class.java)
+            startActivity(intent)
+        }
 
         var dinnerList = mutableMapOf(
             "닭가슴살 샐러드" to mutableMapOf(

@@ -25,8 +25,10 @@
                 android:id="@+id/editTextSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:hint="검색할 메뉴를 입력하세요"
                 android:textColorHint="@color/subTextColor"
+                android:textColor="@color/black"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"/>

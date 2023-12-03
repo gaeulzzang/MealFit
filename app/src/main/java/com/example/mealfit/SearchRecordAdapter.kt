@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.MenuRecyclerviewBinding
 import com.example.mealfit.databinding.RecordSearchBinding
 
-class SearchRecordAdapter(val menuList: ArrayList<Meal>) : RecyclerView.Adapter<SearchRecordAdapter.Holder>() {
+class SearchRecordAdapter(var menuList: ArrayList<Meal>) : RecyclerView.Adapter<SearchRecordAdapter.Holder>() {
     override fun getItemCount(): Int = menuList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchRecordAdapter.Holder {
@@ -23,8 +23,8 @@ class SearchRecordAdapter(val menuList: ArrayList<Meal>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: SearchRecordAdapter.Holder, position: Int) {
         holder.menuName.text = menuList[position].name
-        holder.menuSize.text = menuList[position].size.toString()
-        holder.menuCalorie.text = menuList[position].kcal.toString()
+        holder.menuSize.text = menuList[position].size.toString()+"g"
+        holder.menuCalorie.text = menuList[position].kcal.toString()+"kcal"
     }
 
     inner class Holder(binding: MenuRecyclerviewBinding) : RecyclerView.ViewHolder(binding.root) {
