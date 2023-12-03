@@ -2,6 +2,7 @@ package com.example.mealfit
 
 import android.R
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.text.TextWatcher
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
