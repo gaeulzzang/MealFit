@@ -44,8 +44,22 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/menu_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             tools:listitem="@layout/menu_recyclerview"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:text="내가 찾는 메뉴가 없다면" />
+        <TextView
+            android:id="@+id/enroll_start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:text="@string/enroll"
+            android:textColor="@color/black"
+            android:layout_marginBottom="10dp"/>
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
