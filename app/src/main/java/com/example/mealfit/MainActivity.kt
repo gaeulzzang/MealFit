@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.mealfit.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    //private val key = "71bdb826d7084a3cb4c7"
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

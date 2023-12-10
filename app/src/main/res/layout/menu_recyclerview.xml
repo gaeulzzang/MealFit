@@ -36,7 +36,7 @@
         android:textSize="15sp"/>
     <ImageButton
         android:layout_gravity="center"
-        android:id="@+id/menu_button"
+        android:id="@+id/menu_add_btn"
         app:tint="@color/subTextColor"
         android:layout_width="30dp"
         android:layout_height="30dp"

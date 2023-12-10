@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "135515272116",
+    "project_id": "mealfit-08",
+    "storage_bucket": "mealfit-08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135515272116:android:d451c8db7a8bf5727978e1",
+        "android_client_info": {
+          "package_name": "com.example.mealfit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxGqNknZxTTnLw_PccEERxw9vN5eRNYkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
