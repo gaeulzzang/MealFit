@@ -30,8 +30,7 @@
             android:parentActivityName=".InitSettingActivity1" />
         <activity
             android:name=".InitSettingActivity3"
-            android:exported="true"
-
+            android:exported="true"/>
         <activity
             android:name=".InitSettingActivity4"
             android:exported="true"
@@ -42,7 +41,6 @@
             android:parentActivityName=".InitSettingActivity4" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -54,5 +52,4 @@
             android:exported="true"
             android:parentActivityName=".SearchRecord"/>
     </application>
-
 </manifest>

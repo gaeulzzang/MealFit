@@ -3,6 +3,7 @@ package com.example.mealfit
 import android.R
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
@@ -76,8 +77,6 @@ MealSelectionListener{
             Meal("닭가슴살", 100, 100, 100, 100, 100)
         )
         val enrollStartButton: TextView = binding.enrollStartButton
-
-        val searchAdapter = SearchRecordAdapter(menuList)
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -90,7 +89,7 @@ MealSelectionListener{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
-            override fun afterTextChanged(s: android.text.Editable?) {
+            override fun afterTextChanged(s: Editable?) {
                 val searchWord = s.toString()
                 val searchList = arrayListOf<Meal>()
                 if (searchWord.length > 0) {
@@ -119,7 +118,7 @@ MealSelectionListener{
     // 뒤로 가기 버튼 클릭 시 기록 탭으로 돌아옴
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> {
+            R.id.home -> {
                 onBackPressedDispatcher.onBackPressed()
                 return true
             }
