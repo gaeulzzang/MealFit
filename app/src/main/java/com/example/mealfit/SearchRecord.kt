@@ -72,10 +72,6 @@ MealSelectionListener{
         val menuRecyclerView : RecyclerView = binding.menuRecyclerView
         menuList = readExcelFileFromAssets()
         val searchAdapter = SearchRecordAdapter(menuList, this)
-        var menuList = arrayListOf(
-            Meal("사과", 10, 10, 100, 100, 100),
-            Meal("닭가슴살", 100, 100, 100, 100, 100)
-        )
         val enrollStartButton: TextView = binding.enrollStartButton
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -133,7 +129,8 @@ MealSelectionListener{
 
     override fun onMealSelected(meal: Meal) {
         val listFragment = ListFragment()
-        listFragment?.displaySelectedMeal(meal)
+        Toast.makeText(this, "선택된 메뉴: ${meal.name}", Toast.LENGTH_SHORT).show()
+        //listFragment?.displaySelectedMeal(meal)
     }
     private fun readExcelFileFromAssets() : ArrayList<Meal> {
     // Excel 파일에서 데이터 읽기
