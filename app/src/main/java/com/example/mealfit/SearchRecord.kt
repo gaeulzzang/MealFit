@@ -2,17 +2,31 @@ package com.example.mealfit
 
 import android.R
 import android.os.Bundle
-import android.text.TextUtils.replace
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.RecordSearchBinding
-data class Meal(val name: String, val size: Int, val kcal: Int, val carbohydrate: Int, val protein: Int, val fat: Int)
+import org.apache.poi.hssf.usermodel.HSSFCell
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.usermodel.*
 
-class SearchRecord : AppCompatActivity(){
+data class Meal(
+    val name: String,
+    val size: Int,
+    val kcal: Int,
+    val carbohydrate: Int,
+    val protein: Int,
+    val fat: Int)
+interface MealSelectionListener{
+    fun onMealSelected(meal: Meal)
+}
+class SearchRecord : AppCompatActivity(), SearchRecordAdapter.OnItemClickListener,
+MealSelectionListener{
+    private var menuList = arrayListOf<Meal>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = RecordSearchBinding.inflate(layoutInflater)
@@ -23,15 +37,13 @@ class SearchRecord : AppCompatActivity(){
 
         val editTextSearch : EditText = binding.editTextSearch
         val menuRecyclerView : RecyclerView = binding.menuRecyclerView
-        var menuList = arrayListOf(
-            Meal("사과", 10, 10, 100, 100, 100),
-            Meal("닭가슴살", 100, 100, 100, 100, 100)
-        )
-
-        val searchAdapter = SearchRecordAdapter(menuList)
+        menuList = readExcelFileFromAssets()
+        val searchAdapter = SearchRecordAdapter(menuList, this)
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
+        val listFragment = ListFragment()
+        listFragment.setMealSelectionListener(this)
         editTextSearch.addTextChangedListener(object: TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
@@ -69,5 +81,43 @@ class SearchRecord : AppCompatActivity(){
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+    override fun onItemClick(position: Int) {
+        val selectedMeal = menuList[position]
+        // 선택한 Meal을 ListFragment로 전달
+        onMealSelected(selectedMeal)
+    }
+
+    override fun onMealSelected(meal: Meal) {
+        val listFragment = ListFragment()
+        listFragment?.displaySelectedMeal(meal)
+    }
+    private fun readExcelFileFromAssets() : ArrayList<Meal> {
+    // Excel 파일에서 데이터 읽기
+        val inputStream = assets.open("foodDB.xls")
+        val workbook = HSSFWorkbook(inputStream)
+
+        val sheet : Sheet = workbook.getSheetAt(0)
+        val meals = arrayListOf<Meal>()
+        for(rowIndex in 1..sheet.lastRowNum){
+            val row = sheet.getRow(rowIndex)
+            val name = row.getCell(1).stringCellValue
+            val size = getValueFromCell(row.getCell(2))
+            val kcal = getValueFromCell(row.getCell(3))
+            val carbohydrate = getValueFromCell(row.getCell(4))
+            val protein = getValueFromCell(row.getCell(5))
+            val fat = getValueFromCell(row.getCell(6))
+            meals.add(Meal(name, size, kcal, carbohydrate, protein, fat))
+        }
+        inputStream.close()
+        return meals
+    }
+
+    private fun getValueFromCell(cell: Cell): Int {
+        return when(cell?.cellType){
+            HSSFCell.CELL_TYPE_NUMERIC -> cell.numericCellValue.toInt()
+            HSSFCell.CELL_TYPE_STRING -> cell.stringCellValue.toDouble().toInt()
+            else -> 0
+        }
     }
 }

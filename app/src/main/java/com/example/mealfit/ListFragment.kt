@@ -24,6 +24,24 @@ import java.util.Calendar
 
 class ListFragment : Fragment() {
     private var currentDate = Calendar.getInstance()
+    private var mealSelectionListener: MealSelectionListener? = null
+    fun setMealSelectionListener(listener: MealSelectionListener){
+        mealSelectionListener = listener
+    }
+    fun displaySelectedMeal(meal: Meal){
+        val binding = FragmentListBinding.bind(requireView())
+        // 선택한 Meal을 활용하여 원하는 동작 수행
+        // 리사이클러 뷰에 Meal 정보 표시
+        val breakfastList = mutableListOf<Meal>() // RecyclerView에 표시할 아침 식사 목록
+        val breakfastAdapter = binding.breakfastLayout.breakfastListRecyclerView.adapter as? BreakfastAdapter // 예시로 아침 식사 RecyclerView의 어댑터를 가져옴
+
+        breakfastList.add(meal) // 선택한 Meal을 아침 식사 목록에 추가
+
+        breakfastAdapter?.apply {
+            // this.breakfastList = breakfastList // 어댑터의 데이터 업데이트
+            notifyDataSetChanged() // 변경 사항을 RecyclerView에 적용
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
