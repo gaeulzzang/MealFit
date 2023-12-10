@@ -35,7 +35,8 @@
             android:parentActivityName=".InitSettingActivity1" />
         <activity
             android:name=".InitSettingActivity3"
-            android:exported="true"/>
+            android:exported="true"
+            android:parentActivityName=".InitSettingActivity2"/>
 
         <activity
             android:name=".InitSettingActivity4"
