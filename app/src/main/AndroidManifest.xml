@@ -31,8 +31,7 @@
         <activity
             android:name=".InitSettingActivity3"
             android:exported="true"
-            android:parentActivityName=".InitSettingActivity2" >
-        </activity>
+
         <activity
             android:name=".InitSettingActivity4"
             android:exported="true"
@@ -49,7 +48,11 @@
         </activity>
         <activity
             android:name=".SearchRecord"
-            android:exported="true" />
+            android:exported="true"/>
+        <activity
+            android:name=".EnrollRecord"
+            android:exported="true"
+            android:parentActivityName=".SearchRecord"/>
     </application>
 
 </manifest>

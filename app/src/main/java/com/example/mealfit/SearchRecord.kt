@@ -1,15 +1,23 @@
 package com.example.mealfit
 
 import android.R
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.RecordSearchBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import org.apache.poi.hssf.usermodel.HSSFCell
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.*
@@ -27,6 +35,28 @@ interface MealSelectionListener{
 class SearchRecord : AppCompatActivity(), SearchRecordAdapter.OnItemClickListener,
 MealSelectionListener{
     private var menuList = arrayListOf<Meal>()
+//    식단 api 불러오기
+//    private fun getFoodInfo(){
+//
+//        FoodObject.foodService.getFoodInfo("71bdb826d7084a3cb4c7", "I2790", "json").enqueue(object : Callback<List<FoodInfo>> {
+//            override fun onResponse(call: Call<List<FoodInfo>>, response: Response<List<FoodInfo>>) {
+//                if(response.isSuccessful){
+//                    response.body()?.let {
+//                        Log.d("SearchRecord", "onResponse: ${it}")
+//                        Toast.makeText(this@SearchRecord, "데이터", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//                else{
+//                    Log.d("retrofit onResponse", "${response.code()}")
+//                    Toast.makeText(this@SearchRecord, "데이터를 불러오는 데 실패했습니다.1", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            override fun onFailure(call: Call<List<FoodInfo>>, t: Throwable) {
+//                Log.d("retrofit onFaliure", "${t.message}")
+//                Toast.makeText(this@SearchRecord, "데이터를 불러오는 데 실패했습니다.2", Toast.LENGTH_SHORT).show()
+//            }
+//        })
+//    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = RecordSearchBinding.inflate(layoutInflater)
@@ -35,10 +65,19 @@ MealSelectionListener{
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_close_clear_cancel)
 
+//        getFoodInfo()
+
         val editTextSearch : EditText = binding.editTextSearch
         val menuRecyclerView : RecyclerView = binding.menuRecyclerView
         menuList = readExcelFileFromAssets()
         val searchAdapter = SearchRecordAdapter(menuList, this)
+        var menuList = arrayListOf(
+            Meal("사과", 10, 10, 100, 100, 100),
+            Meal("닭가슴살", 100, 100, 100, 100, 100)
+        )
+        val enrollStartButton: TextView = binding.enrollStartButton
+
+        val searchAdapter = SearchRecordAdapter(menuList)
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -70,6 +109,11 @@ MealSelectionListener{
                 searchAdapter.notifyDataSetChanged()
             }
         })
+
+        enrollStartButton.setOnClickListener() {
+            val intent = Intent(this, EnrollRecord::class.java)
+            startActivity(intent)
+        }
     }
 
     // 뒤로 가기 버튼 클릭 시 기록 탭으로 돌아옴
