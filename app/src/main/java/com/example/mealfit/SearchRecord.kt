@@ -76,8 +76,6 @@ MealSelectionListener{
             Meal("닭가슴살", 100, 100, 100, 100, 100)
         )
         val enrollStartButton: TextView = binding.enrollStartButton
-
-        val searchAdapter = SearchRecordAdapter(menuList)
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
