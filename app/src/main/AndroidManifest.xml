@@ -52,7 +52,8 @@
         </activity>
         <activity
             android:name=".SearchRecord"
-            android:exported="true"/>
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".EnrollRecord"
             android:exported="true"
