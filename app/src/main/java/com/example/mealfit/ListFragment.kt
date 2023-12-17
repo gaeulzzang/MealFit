@@ -2,24 +2,17 @@ package com.example.mealfit
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.health.connect.datatypes.MealType
-import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.FragmentListBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
 
 class ListFragment : Fragment() {
@@ -27,20 +20,6 @@ class ListFragment : Fragment() {
     private var mealSelectionListener: MealSelectionListener? = null
     fun setMealSelectionListener(listener: MealSelectionListener){
         mealSelectionListener = listener
-    }
-    fun displaySelectedMeal(meal: Meal){
-        val binding = FragmentListBinding.bind(requireView())
-        // 선택한 Meal을 활용하여 원하는 동작 수행
-        // 리사이클러 뷰에 Meal 정보 표시
-        val breakfastList = mutableListOf<Meal>() // RecyclerView에 표시할 아침 식사 목록
-        val breakfastAdapter = binding.breakfastLayout.breakfastListRecyclerView.adapter as? BreakfastAdapter // 예시로 아침 식사 RecyclerView의 어댑터를 가져옴
-//
-//        breakfastList.add(meal) // 선택한 Meal을 아침 식사 목록에 추가
-//
-//        breakfastAdapter?.apply {
-//            // this.breakfastList = breakfastList // 어댑터의 데이터 업데이트
-//            notifyDataSetChanged() // 변경 사항을 RecyclerView에 적용
-//        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,126 +31,23 @@ class ListFragment : Fragment() {
         // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
         binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
+            intent.putExtra("breakfast", true)
             startActivity(intent)
         }
 
-        var breakfastList = mutableMapOf(
-            "백미밥" to mutableMapOf(
-                "g" to 300,
-                "kcal" to 300,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "닭가슴살" to mutableMapOf(
-                "g" to 100,
-                "kcal" to 200,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "두부" to mutableMapOf(
-                "g" to 50,
-                "kcal" to 80,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            )
-        )
-        binding.breakfastLayout.breakfastCalorie.text = "열량 " + breakfastList.values.sumBy { it["kcal"] as Int }.toString() + "kcal"
-        binding.breakfastLayout.breakfastCarbohydrate.text = "탄수화물 " + breakfastList.values.sumBy { it["탄수화물(g)"] as Int }.toString() + "g"
-        binding.breakfastLayout.breakfastProtein.text = "단백질 " + breakfastList.values.sumBy { it["단백질(g)"] as Int }.toString() + "g"
-        binding.breakfastLayout.breakfastFat.text = "지방 " + breakfastList.values.sumBy { it["지방(g)"] as Int }.toString() + "g"
-
-        // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
         binding.lunchLayout.lunchAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
+            intent.putExtra("lunch", true)
             startActivity(intent)
         }
 
-        var lunchList = mutableMapOf(
-            "닭가슴살 샐러드" to mutableMapOf(
-                "g" to 300,
-                "kcal" to 300,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "과일 스무디" to mutableMapOf(
-                "g" to 100,
-                "kcal" to 200,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "참치 샌드위치" to mutableMapOf(
-                "g" to 50,
-                "kcal" to 80,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "백미밥" to mutableMapOf(
-                "g" to 300,
-                "kcal" to 300,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-        )
-        binding.lunchLayout.lunchCalorie.text = "열량 " + lunchList.values.sumBy { it["kcal"] as Int }.toString() + "kcal"
-        binding.lunchLayout.lunchCarbohydrate.text = "탄수화물 " + lunchList.values.sumBy { it["탄수화물(g)"] as Int }.toString() + "g"
-        binding.lunchLayout.lunchProtein.text = "단백질 " + lunchList.values.sumBy { it["단백질(g)"] as Int }.toString() + "g"
-        binding.lunchLayout.lunchFat.text = "지방 " + lunchList.values.sumBy { it["지방(g)"] as Int }.toString() + "g"
-
-        // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
         binding.dinnerLayout.dinnerAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
+            intent.putExtra("dinner", true)
             startActivity(intent)
         }
 
-        var dinnerList = mutableMapOf(
-            "닭가슴살 샐러드" to mutableMapOf(
-                "g" to 300,
-                "kcal" to 300,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "과일 스무디" to mutableMapOf(
-                "g" to 100,
-                "kcal" to 200,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "참치 샌드위치" to mutableMapOf(
-                "g" to 50,
-                "kcal" to 80,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            )
-        )
-        binding.dinnerLayout.dinnerCalorie.text = "열량 " + dinnerList.values.sumBy { it["kcal"] as Int }.toString() + "kcal"
-        binding.dinnerLayout.dinnerCarbohydrate.text = "탄수화물 " + dinnerList.values.sumBy { it["탄수화물(g)"] as Int }.toString() + "g"
-        binding.dinnerLayout.dinnerProtein.text = "단백질 " + dinnerList.values.sumBy { it["단백질(g)"] as Int }.toString() + "g"
-        binding.dinnerLayout.dinnerFat.text = "지방 " + dinnerList.values.sumBy { it["지방(g)"] as Int }.toString() + "g"
-
-        val breakfastLayoutManager = LinearLayoutManager(activity)
-        binding.breakfastLayout.breakfastListRecyclerView.layoutManager = breakfastLayoutManager
-        val breakfastAdapter = BreakfastAdapter(breakfastList){updateSums()}
-        binding.breakfastLayout.breakfastListRecyclerView.adapter = breakfastAdapter
-        binding.breakfastLayout.breakfastListRecyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-        val lunchLayoutManager = LinearLayoutManager(activity)
-        binding.lunchLayout.lunchListRecyclerView.layoutManager = lunchLayoutManager
-        binding.lunchLayout.lunchListRecyclerView.adapter = LunchAdapter(lunchList){updateSums()}
-        binding.lunchLayout.lunchListRecyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-        val dinnerLayoutManager = LinearLayoutManager(activity)
-        binding.dinnerLayout.dinnerListRecyclerView.layoutManager = dinnerLayoutManager
-        binding.dinnerLayout.dinnerListRecyclerView.adapter = DinnerAdapter(dinnerList){updateSums()}
-        binding.dinnerLayout.dinnerListRecyclerView.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-
+        // 식사 삭제 버튼 누를 경우
         binding.breakfastLayout.breakfastDeleteBtn.setOnClickListener{
             createDeleteConfirmationDialog(binding.breakfastLayout.breakfastLayout, "아침")
         }
@@ -191,59 +67,13 @@ class ListFragment : Fragment() {
             setTitle("$mealType 식사 삭제 확인")
             setMessage("정말 삭제하시겠습니까?") // 사용자에게 표시할 메시지
             setPositiveButton("네") { _, _ ->
-                // '네'를 선택한 경우
                 layout.visibility = View.GONE
-                // 추가로 원하는 작업 수행 가능
             }
             setNegativeButton("아니오") { dialog, _ ->
-                // '아니오'를 선택한 경우
                 dialog.dismiss() // 다이얼로그 닫기
             }
             create().show() // 다이얼로그를 보여줍니다.
         }
-    }
-    data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
-    private fun calculateSum(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>): Quadruple<Int, Int, Int, Int> {
-        val mealList = when (adapter) {
-            is BreakfastAdapter -> adapter.breakfastList
-            is LunchAdapter -> adapter.lunchList
-            is DinnerAdapter -> adapter.dinnerList
-            else -> emptyMap()
-        }
-
-        val calorieSum = mealList.values.sumBy { it["kcal"] as Int }
-        val carbohydrateSum = mealList.values.sumBy { it["탄수화물(g)"] as Int }
-        val proteinSum = mealList.values.sumBy { it["단백질(g)"] as Int }
-        val fatSum = mealList.values.sumBy { it["지방(g)"] as Int }
-
-        return Quadruple(calorieSum, carbohydrateSum, proteinSum, fatSum)
-    }
-    private fun updateSums() {
-        val binding = FragmentListBinding.bind(requireView())
-        val breakfastAdapter = binding.breakfastLayout.breakfastListRecyclerView.adapter as BreakfastAdapter
-        val lunchAdapter = binding.lunchLayout.lunchListRecyclerView.adapter as LunchAdapter
-        val dinnerAdapter = binding.dinnerLayout.dinnerListRecyclerView.adapter as DinnerAdapter
-
-        val (breakfastCalorieSum, breakfastCarbohydrateSum, breakfastProteinSum, breakfastFatSum) =
-            breakfastAdapter?.let {calculateSum(it)}  ?: Quadruple(0, 0, 0, 0)
-        binding.breakfastLayout.breakfastCalorie.text = "열량 $breakfastCalorieSum kcal"
-        binding.breakfastLayout.breakfastCarbohydrate.text = "탄수화물 $breakfastCarbohydrateSum g"
-        binding.breakfastLayout.breakfastProtein.text = "단백질 $breakfastProteinSum g"
-        binding.breakfastLayout.breakfastFat.text = "지방 $breakfastFatSum g"
-
-        val (lunchCalorieSum, lunchCarbohydrateSum, lunchProteinSum, lunchFatSum) =
-            lunchAdapter?.let {calculateSum(it)}  ?: Quadruple(0, 0, 0, 0)
-        binding.lunchLayout.lunchCalorie.text = "열량 $lunchCalorieSum kcal"
-        binding.lunchLayout.lunchCarbohydrate.text = "탄수화물 $lunchCarbohydrateSum g"
-        binding.lunchLayout.lunchProtein.text = "단백질 $lunchProteinSum g"
-        binding.lunchLayout.lunchFat.text = "지방 $lunchFatSum g"
-
-        val (dinnerCalorieSum, dinnerCarbohydrateSum, dinnerProteinSum, dinnerFatSum) =
-            dinnerAdapter?.let {calculateSum(it)}  ?: Quadruple(0, 0, 0, 0)
-        binding.dinnerLayout.dinnerCalorie.text = "열량 $dinnerCalorieSum kcal"
-        binding.dinnerLayout.dinnerCarbohydrate.text = "탄수화물 $dinnerCarbohydrateSum g"
-        binding.dinnerLayout.dinnerProtein.text = "단백질 $dinnerProteinSum g"
-        binding.dinnerLayout.dinnerFat.text = "지방 $dinnerFatSum g"
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -303,6 +133,149 @@ class ListFragment : Fragment() {
                 show()
             }
         }
+        fetchBreakfastData()
+        fetchLunchData()
+        fetchDinnerData()
+    }
+    private fun fetchBreakfastData() {
+        // Firebase Storage에서 아침 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/breakfast")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+            val breakfastList = mutableListOf<Meal>()
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    breakfastList.add(meal)
+                    // RecyclerView Adapter 업데이트
+                    val binding = FragmentListBinding.bind(requireView())
+                    val breakfastAdapter = BreakfastAdapter(breakfastList){updateSums()}
+                    binding.breakfastLayout.breakfastListRecyclerView.adapter = breakfastAdapter
+                    binding.breakfastLayout.breakfastListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    binding.breakfastLayout.breakfastListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
+                    }
+            }
+
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
+            }
+    }
+
+    private fun fetchLunchData() {
+        // Firebase Storage에서 점심 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/lunch")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+            val lunchList = mutableListOf<Meal>()
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    lunchList.add(meal)
+                    // RecyclerView Adapter 업데이트
+                    val binding = FragmentListBinding.bind(requireView())
+                    val lunchAdapter = LunchAdapter(lunchList){updateSums()}
+                    binding.lunchLayout.lunchListRecyclerView.adapter = lunchAdapter
+                    binding.lunchLayout.lunchListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    binding.lunchLayout.lunchListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
+                    }
+            }
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
+            }
+    }
+    private fun fetchDinnerData() {
+        // Firebase Storage에서 저녁 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/dinner")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+            val dinnerList = mutableListOf<Meal>()
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    dinnerList.add(meal)
+                    // RecyclerView Adapter 업데이트
+                    val binding = FragmentListBinding.bind(requireView())
+                    val dinnerAdapter = DinnerAdapter(dinnerList){updateSums()}
+                    binding.dinnerLayout.dinnerListRecyclerView.adapter = dinnerAdapter
+                    binding.dinnerLayout.dinnerListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    binding.dinnerLayout.dinnerListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
+                    }
+            }
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
+            }
+    }
+    private fun parseMealData(mealData: String) : Meal{
+        val mealInfoList = mealData.split(",")
+        val mealName = mealInfoList[0].substringAfter("Name: ").trim().toString()
+        val mealSize = mealInfoList[1].substringAfter("Size: ").trim().toInt()
+        val mealCalorie = mealInfoList[2].substringAfter("Kcal: ").trim().toInt()
+        val mealCarbohydrate = mealInfoList[3].substringAfter("Carbohydrate: ").trim().toInt()
+        val mealProtein = mealInfoList[4].substringAfter("Protein: ").trim().toInt()
+        val mealFat = mealInfoList[5].substringAfter("Fat: ").trim().toInt()
+        return Meal(mealName, mealSize, mealCalorie, mealCarbohydrate, mealProtein, mealFat)
+    }
+
+    private fun updateSums() {
+        // 아침, 점심, 저녁 식사의 합계 업데이트
+        val binding = FragmentListBinding.bind(requireView())
+        var breakfastCalorieSum = 0; var breakfastCarbohydrateSum = 0; var breakfastProteinSum = 0; var breakfastFatSum = 0
+        var lunchCalorieSum = 0; var lunchCarbohydrateSum = 0; var lunchProteinSum = 0; var lunchFatSum = 0
+        var dinnerCalorieSum = 0; var dinnerCarbohydrateSum = 0; var dinnerProteinSum = 0; var dinnerFatSum = 0
+        (binding.breakfastLayout.breakfastListRecyclerView.adapter as? BreakfastAdapter)?.let { adapter ->
+            for (i in 0 until adapter.itemCount) {
+                val meal = adapter.breakfastList.getOrNull(i)
+                meal?.let {
+                    breakfastCalorieSum += meal.kcal
+                    breakfastCarbohydrateSum += meal.carbohydrate
+                    breakfastProteinSum += meal.protein
+                    breakfastFatSum += meal.fat
+                }
+            }
+        }
+        for(i in 0 until binding.lunchLayout.lunchListRecyclerView.adapter!!.itemCount){
+            val meal = (binding.lunchLayout.lunchListRecyclerView.adapter as LunchAdapter).lunchList[i]
+            lunchCalorieSum += meal.kcal
+            lunchCarbohydrateSum += meal.carbohydrate
+            lunchProteinSum += meal.protein
+            lunchFatSum += meal.fat
+        }
+        for(i in 0 until binding.dinnerLayout.dinnerListRecyclerView.adapter!!.itemCount){
+            val meal = (binding.dinnerLayout.dinnerListRecyclerView.adapter as DinnerAdapter).dinnerList[i]
+            dinnerCalorieSum += meal.kcal
+            dinnerCarbohydrateSum += meal.carbohydrate
+            dinnerProteinSum += meal.protein
+            dinnerFatSum += meal.fat
+        }
+        binding.breakfastLayout.breakfastCalorie.text = "열량 " + breakfastCalorieSum.toString() + "kcal"
+        binding.breakfastLayout.breakfastCarbohydrate.text = "탄수화물 " + breakfastCarbohydrateSum.toString() + "g"
+        binding.breakfastLayout.breakfastProtein.text = "단백질 " + breakfastProteinSum.toString() + "g"
+        binding.breakfastLayout.breakfastFat.text = "지방 " + breakfastFatSum.toString() + "g"
+
+        binding.lunchLayout.lunchCalorie.text = "열량 " + lunchCalorieSum.toString() + "kcal"
+        binding.lunchLayout.lunchCarbohydrate.text = "탄수화물 " + lunchCarbohydrateSum.toString() + "g"
+        binding.lunchLayout.lunchProtein.text = "단백질 " + lunchProteinSum.toString() + "g"
+        binding.lunchLayout.lunchFat.text = "지방 " + lunchFatSum.toString() + "g"
+
+        binding.dinnerLayout.dinnerCalorie.text = "열량 " + dinnerCalorieSum.toString() + "kcal"
+        binding.dinnerLayout.dinnerCarbohydrate.text = "탄수화물 " + dinnerCarbohydrateSum.toString() + "g"
+        binding.dinnerLayout.dinnerProtein.text = "단백질 " + dinnerProteinSum.toString() + "g"
+        binding.dinnerLayout.dinnerFat.text = "지방 " + dinnerFatSum.toString() + "g"
     }
     override fun onResume() {
         super.onResume()
