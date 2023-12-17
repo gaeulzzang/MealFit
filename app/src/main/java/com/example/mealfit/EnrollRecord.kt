@@ -1,7 +1,9 @@
 package com.example.mealfit
 
+import android.R
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mealfit.databinding.RecordEnrollBinding
@@ -13,6 +15,7 @@ class EnrollRecord: AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_close_clear_cancel)
 
         val enrollButton = binding.enrollButton
         val newMenuName = binding.newMenuName.toString()
