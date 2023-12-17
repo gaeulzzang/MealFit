@@ -52,6 +52,23 @@ class MyPageFragment : Fragment() {
         val weight = sharedPreference.getString("weight", "")
         binding.nickname.text = nickname
         binding.ageHeightWeight.text = age + "세 / " + height + "cm / " + weight + "kg"
+
+//        val storage = MyApplication.storage
+//        val storageRef = storage.reference.child("users/${nickname}.txt")
+//        val userInfo =
+//            "Nickname: $nickname, Age: $age, Height: $height, Weight: $weight, TotalCalorie: $totalCalorieAmount, Carbohydrate: $carbohydrateAmount, Protein: $proteinAmount, Fat: $fatAmount"
+//        val userData = userInfo.toByteArray()
+//        val uploadTask = storageRef.putBytes(userData)
+//        uploadTask.addOnFailureListener {
+//            Log.d("Upload", "사용자 정보 업로드 실패")
+//        }.addOnSuccessListener {
+//            Log.d("Upload", "사용자 정보 업로드 성공")
+//            val homeFragment = HomeFragment().apply {
+//                arguments = Bundle().apply {
+//                    putString("nickname", nickname)
+//                }
+//            }
+//        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -11,7 +11,7 @@ import com.example.mealfit.databinding.HomeRecyclerviewBinding
 class MyHomeViewHolder(val binding: HomeRecyclerviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 }
-class MyHomeAdapter(private val menuInfo: Map<String, Map<String, Any>>) :
+class MyHomeAdapter(val menuInfo: MutableList<Meal>) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int = menuInfo.size
 
@@ -21,10 +21,11 @@ class MyHomeAdapter(private val menuInfo: Map<String, Map<String, Any>>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyHomeViewHolder).binding
-        binding.foodName.text = menuInfo.keys.elementAt(position)
-        binding.foodCalorie.text = "열량 " + menuInfo[menuInfo.keys.elementAt(position)]?.get("열량(kcal)").toString() + "kcal"
-        binding.foodCarbohydrate.text = "탄수화물 " + menuInfo[menuInfo.keys.elementAt(position)]?.get("탄수화물(g)").toString() + "g"
-        binding.foodProtein.text = "단백질 " + menuInfo[menuInfo.keys.elementAt(position)]?.get("단백질(g)").toString() + "g"
-        binding.foodFat.text = "지방 " + menuInfo[menuInfo.keys.elementAt(position)]?.get("지방(g)").toString() + "g"
+        val meal = menuInfo[position]
+        binding.foodName.text = meal.name
+        binding.foodCalorie.text = "열량 ${meal.kcal}kcal"
+        binding.foodCarbohydrate.text = "탄수화물 ${meal.carbohydrate}g"
+        binding.foodProtein.text = "단백질 ${meal.protein}g"
+        binding.foodFat.text = "지방 ${meal.fat}g"
     }
 }
