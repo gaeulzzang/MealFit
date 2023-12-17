@@ -1,6 +1,7 @@
 package com.example.mealfit
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -30,12 +31,23 @@ class InitSettingActivity4 : AppCompatActivity() {
         var fatAmount = binding.fatAmount
 
         // 탄수화물, 단백질, 지방, 총 열량 계산하는 로직 구현하기
-        carbohydrateAmount.text = Math.round((intakeCalorie * (carbohydrate * 0.1) / 4)).toString() + " g"
-        proteinAmount.text = Math.round((intakeCalorie * (protein * 0.1) / 4)).toString() + " g"
-        fatAmount.text = Math.round((intakeCalorie * (fat * 0.1) / 9)).toString() + " g"
+        val recommendedCarbohydrate = Math.round((intakeCalorie * (carbohydrate * 0.1) / 4))
+        carbohydrateAmount.text = recommendedCarbohydrate.toString() + " g"
+        val recommendedProtein = Math.round((intakeCalorie * (protein * 0.1) / 4))
+        proteinAmount.text = recommendedProtein.toString() + " g"
+        val recommendedFat = Math.round((intakeCalorie * (fat * 0.1) / 9))
+        fatAmount.text = recommendedFat.toString() + " g"
         binding.totalCalorieAmount.text = intakeCalorie.toString() + " kcal"
 
         binding.nextButton.setOnClickListener{
+            val sharedPreference = getSharedPreferences("nutr info", MODE_PRIVATE)
+            val editor : SharedPreferences.Editor = sharedPreference.edit()
+            editor.putInt("recommendedCarbohydrate", recommendedCarbohydrate.toInt())
+            editor.putInt("recommendedProtein", recommendedProtein.toInt())
+            editor.putInt("recommendedFat", recommendedFat.toInt())
+            editor.putInt("recommendedCalorie", intakeCalorie)
+            editor.apply()
+
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("previousActivity", "InitSettingActivity4")
             intent.putExtra("carbohydrateAmount", carbohydrateAmount.text.toString())
