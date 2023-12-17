@@ -2,18 +2,21 @@ package com.example.mealfit
 
 import android.R
 import android.app.Activity
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.MenuRecyclerviewBinding
 import com.example.mealfit.databinding.RecordSearchBinding
 
 class SearchRecordAdapter(var menuList: ArrayList<Meal>,
     private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<SearchRecordAdapter.Holder>() {
+    private val selectedItems = mutableSetOf<Meal>()
     override fun getItemCount(): Int = menuList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchRecordAdapter.Holder {
