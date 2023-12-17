@@ -1,13 +1,20 @@
 package com.example.mealfit
 
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.FragmentConsumptionBinding
+import com.example.mealfit.databinding.FragmentListBinding
+import com.example.mealfit.databinding.FragmentMyPageBinding
 import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
@@ -41,8 +48,18 @@ class ConsumptionFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_consumption, container, false)
     }
+
+    val breakfastList = mutableListOf<Meal>()
+    val lunchList = mutableListOf<Meal>()
+    val dinnerList = mutableListOf<Meal>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
+
+        fetchBreakfastData()
+        fetchLunchData()
+        fetchDinnerData()
+
         val toolbar = requireActivity().findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         toolbar.title = "오늘의 섭취량"
         toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
@@ -67,6 +84,113 @@ class ConsumptionFragment : Fragment() {
         date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         updateDate()
     }
+
+    private fun fetchBreakfastData() {
+        // Firebase Storage에서 아침 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/breakfast")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    breakfastList.add(meal)
+                    updateUI()
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
+                    }
+            }
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
+            }
+    }
+
+    private fun fetchLunchData() {
+        // Firebase Storage에서 점심 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/lunch")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    lunchList.add(meal)
+                    updateUI()
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
+                    }
+            }
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
+            }
+    }
+    private fun fetchDinnerData() {
+        // Firebase Storage에서 저녁 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/dinner")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    dinnerList.add(meal)
+                    updateUI()
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
+                    }
+            }
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
+            }
+    }
+
+    private fun updateUI(){
+        val sharedPreference = requireContext().getSharedPreferences("nutr info", MODE_PRIVATE)
+        val recommendedCalorie = sharedPreference.getInt("recommendedCalorie", 0)
+        val recommendedCarbohydrate = sharedPreference.getInt("recommendedCarbohydrate", 0)
+        val recommendedProtein = sharedPreference.getInt("recommendedProtein", 0)
+        val recommendedFat = sharedPreference.getInt("recommendedFat", 0)
+
+        val binding = FragmentConsumptionBinding.bind(requireView())
+
+        val totalCalorieAmount = breakfastList.sumBy { it.kcal } + lunchList.sumBy { it.kcal } + dinnerList.sumBy { it.kcal }
+        val totalCaloriePercent = if (recommendedCalorie != 0) Math.round(totalCalorieAmount.toFloat() / recommendedCalorie * 100) else 0
+        val carbohydrateG = breakfastList.sumBy { it.carbohydrate } + lunchList.sumBy { it.carbohydrate } + dinnerList.sumBy { it.carbohydrate }
+        val carbohydratePercent = if (recommendedCarbohydrate != 0) Math.round(carbohydrateG.toFloat() / recommendedCarbohydrate * 100) else 0
+        val proteinG = breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
+        val proteinPercent = if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
+        val fatG = breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
+        val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
+
+        binding.calorieKcal.text = totalCalorieAmount.toString() + "kcal"
+        binding.caloriePercent.text = totalCaloriePercent.toString() + "%"
+        binding.carbohydrateG.text = carbohydrateG.toString() + "g"
+        binding.carbohydratePercent.text = carbohydratePercent.toString() + "%"
+        binding.proteinG.text = proteinG.toString() + "g"
+        binding.proteinPercent.text = proteinPercent.toString() + "%"
+        binding.fatG.text = fatG.toString() + "g"
+        binding.fatPercent.text = fatPercent.toString() + "%"
+    }
+
+    private fun parseMealData(mealData: String) : Meal{
+        val mealInfoList = mealData.split(",")
+        val mealName = mealInfoList[0].substringAfter("Name: ").trim().toString()
+        val mealSize = mealInfoList[1].substringAfter("Size: ").trim().toInt()
+        val mealCalorie = mealInfoList[2].substringAfter("Kcal: ").trim().toInt()
+        val mealCarbohydrate = mealInfoList[3].substringAfter("Carbohydrate: ").trim().toInt()
+        val mealProtein = mealInfoList[4].substringAfter("Protein: ").trim().toInt()
+        val mealFat = mealInfoList[5].substringAfter("Fat: ").trim().toInt()
+        return Meal(mealName, mealSize, mealCalorie, mealCarbohydrate, mealProtein, mealFat)
+    }
+
     private fun updateDate(){
         val month = currentDate.get(Calendar.MONTH) + 1
         val day = currentDate.get(Calendar.DAY_OF_MONTH)

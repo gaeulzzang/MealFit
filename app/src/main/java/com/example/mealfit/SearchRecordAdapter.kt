@@ -32,24 +32,6 @@ class SearchRecordAdapter(var menuList: ArrayList<Meal>,
         holder.itemView.setOnClickListener{
             itemClickListener.onItemClick(position)
         }
-
-        val currentItem = menuList[position]
-        holder.menuAddBtn.setOnClickListener {
-            if (holder.menuAddBtn.visibility == View.VISIBLE) {
-                if (selectedItems.contains(currentItem)) {
-                    selectedItems.remove(currentItem)
-                    holder.itemView.setBackgroundColor(Color.WHITE)
-                } else {
-                    selectedItems.add(currentItem)
-                    holder.itemView.setBackgroundColor(Color.LTGRAY)
-                }
-
-                //onItemClick(currentItem)
-
-                // 버튼을 숨김
-                holder.menuAddBtn.visibility = View.INVISIBLE
-            }
-        }
     }
 
     inner class Holder(binding: MenuRecyclerviewBinding) : RecyclerView.ViewHolder(binding.root) {

@@ -119,8 +119,9 @@ MealSelectionListener{
         }
 
         finBtn.setOnClickListener(){
-            val intent = Intent(this, ListFragment::class.java)
-            startActivity(intent)
+            //supportFragmentManager.beginTransaction().replace(R.id.containers, ListFragment()).commit()
+//            val intent = Intent(this, ListFragment::class.java)
+//            startActivity(intent)
         }
     }
 
@@ -159,9 +160,10 @@ MealSelectionListener{
 
         val uploadTask = storageRef.putBytes(mealData) // Firebase Storage에 업로드
         uploadTask.addOnFailureListener {
-            Toast.makeText(this, "식사 정보를 저장하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+            Log.d("SearchRecord", "onFailure: ${it}")
+            Toast.makeText(this, "${meal.name}을/를 저장하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
         }.addOnSuccessListener {
-            Toast.makeText(this, "식사 정보를 저장했습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "${meal.name}을/를 저장했습니다.", Toast.LENGTH_SHORT).show()
             // ListFragment로 돌아가기
         }
     }
