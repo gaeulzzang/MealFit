@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.RecordSearchBinding
+import com.google.firebase.storage.FirebaseStorage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -109,6 +110,11 @@ MealSelectionListener{
 
         enrollStartButton.setOnClickListener() {
             val intent = Intent(this, EnrollRecord::class.java)
+            // 현재 액티비티의 인텐트 정보를 가져와서 EnrollRecord로 전달
+            val extras = intent.extras
+            if (extras != null) {
+                intent.putExtras(extras)
+            }
             startActivity(intent)
         }
 
@@ -130,14 +136,34 @@ MealSelectionListener{
     }
     override fun onItemClick(position: Int) {
         val selectedMeal = menuList[position]
-        // 선택한 Meal을 ListFragment로 전달
         onMealSelected(selectedMeal)
     }
 
     override fun onMealSelected(meal: Meal) {
-        val listFragment = ListFragment()
-        Toast.makeText(this, "선택된 메뉴: ${meal.name}", Toast.LENGTH_SHORT).show()
-        //listFragment?.displaySelectedMeal(meal)
+        // Firebase Storage에 선택한 식사 저장
+        val storage = MyApplication.storage
+
+        val isBreakfast = intent.getBooleanExtra("breakfast", false)
+        val isLunch = intent.getBooleanExtra("lunch", false)
+        val isDinner = intent.getBooleanExtra("dinner", false)
+
+        val storageRef = when{
+            isBreakfast -> storage.reference.child("meals/breakfast/${meal.name}.txt")
+            isLunch -> storage.reference.child("meals/lunch/${meal.name}.txt")
+            isDinner -> storage.reference.child("meals/dinner/${meal.name}.txt")
+            else -> storage.reference.child("meals/${meal.name}.txt")
+        }
+        // 식사 정보 문자열로 변환
+        val mealInfo = "Name: ${meal.name}, Size: ${meal.size}, Kcal: ${meal.kcal}, Carbohydrate: ${meal.carbohydrate}, Protein: ${meal.protein}, Fat: ${meal.fat}"
+        val mealData = mealInfo.toByteArray() // 문자열을 ByteArray로 변환
+
+        val uploadTask = storageRef.putBytes(mealData) // Firebase Storage에 업로드
+        uploadTask.addOnFailureListener {
+            Toast.makeText(this, "식사 정보를 저장하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }.addOnSuccessListener {
+            Toast.makeText(this, "식사 정보를 저장했습니다.", Toast.LENGTH_SHORT).show()
+            // ListFragment로 돌아가기
+        }
     }
     private fun readExcelFileFromAssets() : ArrayList<Meal> {
     // Excel 파일에서 데이터 읽기
