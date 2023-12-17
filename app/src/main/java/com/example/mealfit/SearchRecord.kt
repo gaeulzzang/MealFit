@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -72,6 +73,7 @@ MealSelectionListener{
         val menuRecyclerView : RecyclerView = binding.menuRecyclerView
         menuList = readExcelFileFromAssets()
         val searchAdapter = SearchRecordAdapter(menuList, this)
+        val finBtn : ImageButton = binding.finBtn
         val enrollStartButton: TextView = binding.enrollStartButton
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -107,6 +109,11 @@ MealSelectionListener{
 
         enrollStartButton.setOnClickListener() {
             val intent = Intent(this, EnrollRecord::class.java)
+            startActivity(intent)
+        }
+
+        finBtn.setOnClickListener(){
+            val intent = Intent(this, ListFragment::class.java)
             startActivity(intent)
         }
     }
