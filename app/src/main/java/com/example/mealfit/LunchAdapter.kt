@@ -1,5 +1,6 @@
 package com.example.mealfit
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +9,7 @@ import com.example.mealfit.databinding.ListRecyclerviewBinding
 class LunchViewHolder(val binding: ListRecyclerviewBinding) :
     RecyclerView.ViewHolder(binding.root){
 }
-class LunchAdapter(public val lunchList: MutableMap<String, MutableMap<String, Int>>,
+class LunchAdapter(val lunchList: MutableList<Meal>,
                    private val onUpdateSums: () -> Unit):
 RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun getItemCount(): Int = lunchList.size
@@ -19,16 +20,28 @@ RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as LunchViewHolder).binding
-        if(position < lunchList.size){
-            val key = lunchList.keys.elementAt(position)
-            binding.menuName.text = key
-            binding.menuAmount.text = lunchList[key]?.get("g").toString() + "g"
-            binding.menuCalorie.text = lunchList[key]?.get("kcal").toString() + "kcal"
-            binding.menuDeleteBtn.setOnClickListener{
-                lunchList.remove(key)
-                notifyDataSetChanged()
-                onUpdateSums.invoke()
-            }
+        val meal = lunchList[position]
+        binding.menuName.text = meal.name
+        binding.menuAmount.text = meal.size.toString() + "g"
+        binding.menuCalorie.text = meal.kcal.toString() + "kcal"
+
+        binding.menuDeleteBtn.setOnClickListener{
+            val mealId = meal.name
+            deleteMealFromStorage(mealId) // Storage에서 음식 삭제
+
+            lunchList.removeAt(position)
+            notifyDataSetChanged()
+            onUpdateSums.invoke()
+        }
+    }
+
+    private fun deleteMealFromStorage(mealId: String) {
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/lunch/${mealId}.txt")
+        storageRef.delete().addOnSuccessListener {
+            Log.d("Delete", "파일 삭제 성공")
+        }.addOnFailureListener {
+            Log.d("Delete", "파일 삭제 실패")
         }
     }
 }
