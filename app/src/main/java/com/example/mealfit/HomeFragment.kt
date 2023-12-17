@@ -10,20 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mealfit.databinding.FragmentHomeBinding
 import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private var currentDate = Calendar.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,32 +21,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        var menuInfo = mapOf(
-            "닭가슴살 샐러드" to mapOf(
-                "열량(kcal)" to 400,
-                "탄수화물(g)" to 50,
-                "단백질(g)" to 30,
-                "지방(g)" to 10
-            ),
-            "과일 스무디" to mapOf(
-                "열량(kcal)" to 200,
-                "탄수화물(g)" to 40,
-                "단백질(g)" to 2,
-                "지방(g)" to 1
-            ),
-            "참치 샌드위치" to mapOf(
-                "열량(kcal)" to 350,
-                "탄수화물(g)" to 45,
-                "단백질(g)" to 25,
-                "지방(g)" to 15
-            )
-        )
+        var menuInfo = mutableListOf<Meal>()
         val binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         val layoutManager = LinearLayoutManager(activity)
         val adapter = MyHomeAdapter(menuInfo)
         binding.homeRecyclerView.layoutManager = layoutManager
         binding.homeRecyclerView.adapter = adapter
-
         return binding.root
     }
 
@@ -89,6 +56,15 @@ class HomeFragment : Fragment() {
         val date = requireActivity().findViewById<android.widget.TextView>(R.id.date)
         date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         updateDate()
+    }
+    private fun loadMenuFromDatabase() : MutableList<Meal>{
+        val menuInfo = mutableListOf<Meal>()
+
+        return menuInfo
+    }
+    private fun recommendMenu(menuInfo: MutableList<Meal>) : MutableList<Meal>{
+        val recommendedMenu = mutableListOf<Meal>()
+        return recommendedMenu
     }
     private fun updateDate(){
         val month = currentDate.get(Calendar.MONTH) + 1
