@@ -3,10 +3,13 @@ package com.example.mealfit
 import android.R
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mealfit.databinding.RecordEnrollBinding
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class EnrollRecord: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,24 +38,23 @@ class EnrollRecord: AppCompatActivity() {
                     val isBreakfast = intent.getBooleanExtra("breakfast", false)
                     val isLunch = intent.getBooleanExtra("lunch", false)
                     val isDinner = intent.getBooleanExtra("dinner", false)
-
+                    Log.d("EnrollRecord", "isBreakfast: $isBreakfast, isLunch: $isLunch, isDinner: $isDinner")
                     val storageRef = when {
                         isBreakfast -> storage.reference.child("meals/breakfast/${newMenuName}.txt")
                         isLunch -> storage.reference.child("meals/lunch/${newMenuName}.txt")
                         isDinner -> storage.reference.child("meals/dinner/${newMenuName}.txt")
-                        else -> storage.reference.child("meals/${newMenuName}.txt")
+                        else -> storage.reference.child("meals/unknown/${newMenuName}.txt")
                     }
 
                     val menuInfo =
                         "Name: $newMenuName, Size: $newMenuSize, Kcal: $newMenuCalorie, Carbohydrate: $newMenuCarbohydrate, Protein: $newMenuProtein, Fat: $newMenuFat"
                     val menuData = menuInfo.toByteArray()
-
                     val uploadTask = storageRef.putBytes(menuData)
                     uploadTask.addOnFailureListener {
-                        Toast.makeText(this, "새로운 메뉴 정보를 저장하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "새로운 메뉴 정보를 저장하는 데 실패했습니다", Toast.LENGTH_SHORT).show()
                     }.addOnSuccessListener {
-                        Toast.makeText(this, "새로운 메뉴 정보를 저장했습니다.", Toast.LENGTH_SHORT).show()
-                        // SearchRecord로 돌아가기
+                        Toast.makeText(this, "새로운 메뉴 정보를 저장했습니다", Toast.LENGTH_SHORT).show()
+                        // 저장 성공 시 SearchRecord로 돌아감
                         val intent = Intent(this, SearchRecord::class.java)
                         startActivity(intent)
                     }

@@ -10,11 +10,13 @@
     android:layout_margin="20dp">
     <TextView
         android:id="@+id/menu_name"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:paddingHorizontal="10dp"
         android:text="닭가슴살"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textSize="20sp"
         android:textColor="@color/black"
         android:textStyle="bold"/>
