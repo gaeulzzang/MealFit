@@ -23,41 +23,18 @@ import java.util.Calendar
 class ListFragment : Fragment() {
     private var currentDate = Calendar.getInstance()
     private var mealSelectionListener: MealSelectionListener? = null
-    private var isBreakfastVisible = false
-
-    private val viewModel by viewModels<ListViewModel>()
 
     fun setMealSelectionListener(listener: MealSelectionListener){
         mealSelectionListener = listener
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean("breakfastVisibility", viewModel.isBreakfastVisible)
-        outState.putBoolean("lunchVisibility", viewModel.isLunchVisible)
-        outState.putBoolean("dinnerVisibility", viewModel.isDinnerVisible)
-        super.onSaveInstanceState(outState)
-    }
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        viewModel.isBreakfastVisible = savedInstanceState?.getBoolean("breakfastVisibility", false) ?: false
-        viewModel.isLunchVisible = savedInstanceState?.getBoolean("lunchVisibility", false) ?: false
-        viewModel.isDinnerVisible = savedInstanceState?.getBoolean("dinnerVisibility", false) ?: false
-    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentListBinding.inflate(layoutInflater, container, false)
-        if(viewModel.isBreakfastVisible){
-            binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
-        }
-        if(viewModel.isLunchVisible){
-            binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
-        }
-        if(viewModel.isDinnerVisible){
-            binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
-        }
+
         // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
         binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
@@ -75,21 +52,6 @@ class ListFragment : Fragment() {
             startActivity(intent)
         }
         return binding.root
-    }
-
-    private fun createDeleteConfirmationDialog(layout: View, mealType: String) {
-        val alertDialogBuilder = AlertDialog.Builder(requireContext())
-        alertDialogBuilder.apply {
-            setTitle("$mealType 식사 삭제 확인")
-            setMessage("정말 삭제하시겠습니까?") // 사용자에게 표시할 메시지
-            setPositiveButton("네") { _, _ ->
-                layout.visibility = View.GONE
-            }
-            setNegativeButton("아니오") { dialog, _ ->
-                dialog.dismiss() // 다이얼로그 닫기
-            }
-            create().show() // 다이얼로그를 보여줍니다.
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
