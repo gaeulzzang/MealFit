@@ -3,16 +3,20 @@ package com.example.mealfit
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat.getColorFilter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.mealfit.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     //private val key = "71bdb826d7084a3cb4c7"
     private lateinit var binding: ActivityMainBinding
+    private val viewModel: ListViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
