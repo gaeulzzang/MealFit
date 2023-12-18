@@ -70,13 +70,23 @@
             android:layout_marginBottom="30dp">
         </androidx.recyclerview.widget.RecyclerView>
         <TextView
-            android:paddingHorizontal="10dp"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@android:drawable/ic_menu_info_details"
-            android:gravity="center"
+            android:drawablePadding="10dp"
             android:drawableTint="@color/subTextColor"
-            android:text="추천 식단의 영양 성분이 과하거나 부족할 수 있습니다."
-            android:textColor="@color/subTextColor"/>
+            android:text="추천 식단의 영양 성분 양이 많거나 적다고 느껴지면, "
+            android:textColor="@color/subTextColor"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:layout_marginTop="110dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="섭취량을 조절해보세요!"
+            android:textColor="@color/subTextColor"
+            android:textSize="15sp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginBottom="70dp"/>
     </LinearLayout>
 </LinearLayout>

@@ -153,31 +153,42 @@ class ConsumptionFragment : Fragment() {
     }
 
     private fun updateUI(){
-        val sharedPreference = requireContext().getSharedPreferences("nutr info", MODE_PRIVATE)
-        val recommendedCalorie = sharedPreference.getInt("recommendedCalorie", 0)
-        val recommendedCarbohydrate = sharedPreference.getInt("recommendedCarbohydrate", 0)
-        val recommendedProtein = sharedPreference.getInt("recommendedProtein", 0)
-        val recommendedFat = sharedPreference.getInt("recommendedFat", 0)
+        if (context != null && isAdded) {
+            val sharedPreference = requireContext().getSharedPreferences("nutr info", MODE_PRIVATE)
+            val recommendedCalorie = sharedPreference.getInt("recommendedCalorie", 0)
+            val recommendedCarbohydrate = sharedPreference.getInt("recommendedCarbohydrate", 0)
+            val recommendedProtein = sharedPreference.getInt("recommendedProtein", 0)
+            val recommendedFat = sharedPreference.getInt("recommendedFat", 0)
 
-        val binding = FragmentConsumptionBinding.bind(requireView())
+            val totalCalorieAmount =
+                breakfastList.sumBy { it.kcal } + lunchList.sumBy { it.kcal } + dinnerList.sumBy { it.kcal }
+            val totalCaloriePercent =
+                if (recommendedCalorie != 0) Math.round(totalCalorieAmount.toFloat() / recommendedCalorie * 100) else 0
+            val carbohydrateG =
+                breakfastList.sumBy { it.carbohydrate } + lunchList.sumBy { it.carbohydrate } + dinnerList.sumBy { it.carbohydrate }
+            val carbohydratePercent =
+                if (recommendedCarbohydrate != 0) Math.round(carbohydrateG.toFloat() / recommendedCarbohydrate * 100) else 0
+            val proteinG =
+                breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
+            val proteinPercent =
+                if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
+            val fatG =
+                breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
+            val fatPercent =
+                if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
 
-        val totalCalorieAmount = breakfastList.sumBy { it.kcal } + lunchList.sumBy { it.kcal } + dinnerList.sumBy { it.kcal }
-        val totalCaloriePercent = if (recommendedCalorie != 0) Math.round(totalCalorieAmount.toFloat() / recommendedCalorie * 100) else 0
-        val carbohydrateG = breakfastList.sumBy { it.carbohydrate } + lunchList.sumBy { it.carbohydrate } + dinnerList.sumBy { it.carbohydrate }
-        val carbohydratePercent = if (recommendedCarbohydrate != 0) Math.round(carbohydrateG.toFloat() / recommendedCarbohydrate * 100) else 0
-        val proteinG = breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
-        val proteinPercent = if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
-        val fatG = breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
-        val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
 
-        binding.calorieKcal.text = totalCalorieAmount.toString() + "kcal"
-        binding.caloriePercent.text = totalCaloriePercent.toString() + "%"
-        binding.carbohydrateG.text = carbohydrateG.toString() + "g"
-        binding.carbohydratePercent.text = carbohydratePercent.toString() + "%"
-        binding.proteinG.text = proteinG.toString() + "g"
-        binding.proteinPercent.text = proteinPercent.toString() + "%"
-        binding.fatG.text = fatG.toString() + "g"
-        binding.fatPercent.text = fatPercent.toString() + "%"
+            val binding = FragmentConsumptionBinding.bind(requireView())
+
+            binding.calorieKcal.text = totalCalorieAmount.toString() + "kcal"
+            binding.caloriePercent.text = totalCaloriePercent.toString() + "%"
+            binding.carbohydrateG.text = carbohydrateG.toString() + "g"
+            binding.carbohydratePercent.text = carbohydratePercent.toString() + "%"
+            binding.proteinG.text = proteinG.toString() + "g"
+            binding.proteinPercent.text = proteinPercent.toString() + "%"
+            binding.fatG.text = fatG.toString() + "g"
+            binding.fatPercent.text = fatPercent.toString() + "%"
+        }
     }
 
     private fun parseMealData(mealData: String) : Meal{
