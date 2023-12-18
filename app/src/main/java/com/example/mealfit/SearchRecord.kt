@@ -63,6 +63,8 @@ MealSelectionListener{
 //            }
 //        })
 //    }
+
+    private var searchAdapter = SearchRecordAdapter(menuList, this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = RecordSearchBinding.inflate(layoutInflater)
@@ -73,7 +75,7 @@ MealSelectionListener{
         val editTextSearch : EditText = binding.editTextSearch
         val menuRecyclerView : RecyclerView = binding.menuRecyclerView
         menuList = readExcelFileFromAssets()
-        val searchAdapter = SearchRecordAdapter(menuList, this)
+        searchAdapter = SearchRecordAdapter(menuList, this)
         val enrollStartBtn: TextView = binding.enrollStartBtn
         val exitBtn: ImageButton = binding.exitBtn
         menuRecyclerView.adapter = searchAdapter
@@ -131,7 +133,7 @@ MealSelectionListener{
     // 뒤로 가기 버튼 클릭 시 기록 탭으로 돌아옴
 
     override fun onItemClick(position: Int) {
-        val selectedMeal = menuList[position]
+        val selectedMeal = searchAdapter.menuList[position]
         onMealSelected(selectedMeal)
     }
 
