@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
                 show()
             }
         }
+
+        else if(previousActivity == "SearchRecord")
+            supportFragmentManager.beginTransaction().replace(R.id.containers, ListFragment()).commit()
+
         // 그 외의 경우 HomeFragment로 이동
         else {
             Log.d("MainActivity", "Starting HomeFragment")
