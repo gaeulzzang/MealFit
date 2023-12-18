@@ -150,51 +150,52 @@ class HomeFragment : Fragment() {
         return Meal(mealName, mealSize, mealCalorie, mealCarbohydrate, mealProtein, mealFat)
     }
     private fun updateUI(){
-        val sharedPreference = requireContext().getSharedPreferences("nutr info", Context.MODE_PRIVATE)
-        val recommendedCarbohydrate = sharedPreference.getInt("recommendedCarbohydrate", 0)
-        val recommendedProtein = sharedPreference.getInt("recommendedProtein", 0)
-        val recommendedFat = sharedPreference.getInt("recommendedFat", 0)
+        if(context != null && isAdded){
+            val sharedPreference = requireContext().getSharedPreferences("nutr info", Context.MODE_PRIVATE)
+            val recommendedCarbohydrate = sharedPreference.getInt("recommendedCarbohydrate", 0)
+            val recommendedProtein = sharedPreference.getInt("recommendedProtein", 0)
+            val recommendedFat = sharedPreference.getInt("recommendedFat", 0)
 
-        val carbohydrateG = breakfastList.sumBy { it.carbohydrate } + lunchList.sumBy { it.carbohydrate } + dinnerList.sumBy { it.carbohydrate }
-        val carbohydratePercent = if (recommendedCarbohydrate != 0) Math.round(carbohydrateG.toFloat() / recommendedCarbohydrate * 100) else 0
-        val proteinG = breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
-        val proteinPercent = if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
-        val fatG = breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
-        val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
+            val carbohydrateG = breakfastList.sumBy { it.carbohydrate } + lunchList.sumBy { it.carbohydrate } + dinnerList.sumBy { it.carbohydrate }
+            val carbohydratePercent = if (recommendedCarbohydrate != 0) Math.round(carbohydrateG.toFloat() / recommendedCarbohydrate * 100) else 0
+            val proteinG = breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
+            val proteinPercent = if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
+            val fatG = breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
+            val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
 
-        val binding = FragmentHomeBinding.bind(requireView())
-        if(carbohydratePercent > 100 && proteinPercent > 100 && fatPercent > 100){
-            Toast.makeText(requireContext(), "탄수화물, 단백질, 지방 함량이 모두 권장량을 초과했습니다.", Toast.LENGTH_SHORT).show()
-        }else{
-            val smallestValue = minOf(carbohydratePercent, proteinPercent, fatPercent)
-            when(smallestValue){
-                carbohydratePercent -> {
-                    val carbohydrateMenuInfo = filterHighCarbohydrateFoods(recommendedCarbohydrate, carbohydrateG)
-                    val layoutManager = LinearLayoutManager(activity)
-                    val adapter = MyHomeAdapter(carbohydrateMenuInfo)
-                    binding.homeRecyclerView.layoutManager = layoutManager
-                    binding.homeRecyclerView.adapter = adapter
-                    Toast.makeText(requireContext(), "탄수화물 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
-                }
-                proteinPercent -> {
-                    val proteinMenuInfo = filterHighProteinFoods(recommendedProtein, proteinG)
-                    val layoutManager = LinearLayoutManager(activity)
-                    val adapter = MyHomeAdapter(proteinMenuInfo)
-                    binding.homeRecyclerView.layoutManager = layoutManager
-                    binding.homeRecyclerView.adapter = adapter
-                    Toast.makeText(requireContext(), "단백질 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
-                }
-                fatPercent -> {
-                    val fatMenuInfo = filterHighFatFoods(recommendedFat, fatG)
-                    val layoutManager = LinearLayoutManager(activity)
-                    val adapter = MyHomeAdapter(fatMenuInfo)
-                    binding.homeRecyclerView.layoutManager = layoutManager
-                    binding.homeRecyclerView.adapter = adapter
-                    Toast.makeText(requireContext(), "지방 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+            val binding = FragmentHomeBinding.bind(requireView())
+            if(carbohydratePercent > 100 && proteinPercent > 100 && fatPercent > 100){
+                Toast.makeText(requireContext(), "탄수화물, 단백질, 지방 함량이 모두 권장량을 초과했습니다.", Toast.LENGTH_SHORT).show()
+            }else{
+                val smallestValue = minOf(carbohydratePercent, proteinPercent, fatPercent)
+                when(smallestValue){
+                    carbohydratePercent -> {
+                        val carbohydrateMenuInfo = filterHighCarbohydrateFoods(recommendedCarbohydrate, carbohydrateG)
+                        val layoutManager = LinearLayoutManager(activity)
+                        val adapter = MyHomeAdapter(carbohydrateMenuInfo)
+                        binding.homeRecyclerView.layoutManager = layoutManager
+                        binding.homeRecyclerView.adapter = adapter
+                        Toast.makeText(requireContext(), "탄수화물 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    proteinPercent -> {
+                        val proteinMenuInfo = filterHighProteinFoods(recommendedProtein, proteinG)
+                        val layoutManager = LinearLayoutManager(activity)
+                        val adapter = MyHomeAdapter(proteinMenuInfo)
+                        binding.homeRecyclerView.layoutManager = layoutManager
+                        binding.homeRecyclerView.adapter = adapter
+                        Toast.makeText(requireContext(), "단백질 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    fatPercent -> {
+                        val fatMenuInfo = filterHighFatFoods(recommendedFat, fatG)
+                        val layoutManager = LinearLayoutManager(activity)
+                        val adapter = MyHomeAdapter(fatMenuInfo)
+                        binding.homeRecyclerView.layoutManager = layoutManager
+                        binding.homeRecyclerView.adapter = adapter
+                        Toast.makeText(requireContext(), "지방 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
-
     }
 
     private fun filterHighCarbohydrateFoods(recommendedCarbohydrate: Int, carbohydrateG: Int) : ArrayList<Meal>{

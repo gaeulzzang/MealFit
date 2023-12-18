@@ -11,52 +11,53 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mealfit.databinding.FragmentConsumptionBinding
 import com.example.mealfit.databinding.FragmentListBinding
 import java.util.Calendar
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+
 class ListFragment : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
     private var currentDate = Calendar.getInstance()
     private var mealSelectionListener: MealSelectionListener? = null
+    private var isBreakfastVisible = false
 
-    val breakfastList = mutableListOf<Meal>()
-    val lunchList = mutableListOf<Meal>()
-    val dinnerList = mutableListOf<Meal>()
-
-    var isBreakfastVisible: Boolean = false
-    var isLunchVisible: Boolean = false
-    var isDinnerVisible: Boolean = false
+    private val viewModel by viewModels<ListViewModel>()
 
     fun setMealSelectionListener(listener: MealSelectionListener){
         mealSelectionListener = listener
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("breakfastVisibility", viewModel.isBreakfastVisible)
+        outState.putBoolean("lunchVisibility", viewModel.isLunchVisible)
+        outState.putBoolean("dinnerVisibility", viewModel.isDinnerVisible)
+        super.onSaveInstanceState(outState)
+    }
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        viewModel.isBreakfastVisible = savedInstanceState?.getBoolean("breakfastVisibility", false) ?: false
+        viewModel.isLunchVisible = savedInstanceState?.getBoolean("lunchVisibility", false) ?: false
+        viewModel.isDinnerVisible = savedInstanceState?.getBoolean("dinnerVisibility", false) ?: false
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
         val binding = FragmentListBinding.inflate(layoutInflater, container, false)
-
-        fetchBreakfastData()
-        fetchLunchData()
-        fetchDinnerData()
-
+        if(viewModel.isBreakfastVisible){
+            binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
+        }
+        if(viewModel.isLunchVisible){
+            binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
+        }
+        if(viewModel.isDinnerVisible){
+            binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
+        }
         // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
         binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
@@ -73,18 +74,6 @@ class ListFragment : Fragment() {
             intent.putExtra("dinner", true)
             startActivity(intent)
         }
-
-        // 식사 삭제 버튼 누를 경우
-        binding.breakfastLayout.breakfastDeleteBtn.setOnClickListener{
-            createDeleteConfirmationDialog(binding.breakfastLayout.breakfastLayout, "아침")
-        }
-        binding.lunchLayout.lunchDeleteBtn.setOnClickListener{
-            createDeleteConfirmationDialog(binding.lunchLayout.lunchLayout, "점심")
-        }
-        binding.dinnerLayout.dinnerDeleteBtn.setOnClickListener{
-            createDeleteConfirmationDialog(binding.dinnerLayout.dinnerLayout, "저녁")
-        }
-
         return binding.root
     }
 
@@ -118,52 +107,10 @@ class ListFragment : Fragment() {
             currentDate.add(Calendar.DATE, 1)
             updateDate()
         }
-        binding.addMealFab.setOnClickListener{
-            val items = arrayOf<String>("아침", "점심", "저녁")
-            AlertDialog.Builder(requireContext()).run{
-                setTitle("식사 추가하기")
-                setItems(items){ _, which ->
-                    when(which){
-                        0 -> {
-                            if (binding.breakfastLayout.breakfastLayout.visibility != View.VISIBLE) {
-                                Toast.makeText(requireContext(), "아침 식사를 추가합니다", Toast.LENGTH_SHORT).show()
-                                isBreakfastVisible = true
-                                updateUI()
-                            } else {
-                                Toast.makeText(requireContext(), "이미 아침 식사가 존재합니다", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        1 -> {
-                            if (binding.lunchLayout.lunchLayout.visibility != View.VISIBLE) {
-                                Toast.makeText(requireContext(), "점심 식사를 추가합니다", Toast.LENGTH_SHORT).show()
-                                isLunchVisible = true
-                                updateUI()
-                            } else {
-                                Toast.makeText(requireContext(), "이미 점심 식사가 존재합니다", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        2 -> {
-                            if (binding.dinnerLayout.dinnerLayout.visibility != View.VISIBLE) {
-                                Toast.makeText(requireContext(), "저녁 식사를 추가합니다", Toast.LENGTH_SHORT).show()
-                                isDinnerVisible = true
-                                updateUI()
-                            } else {
-                                Toast.makeText(requireContext(), "이미 저녁 식사가 존재합니다", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                    // 적어도 하나가 visible이면 empty_text를 gone으로 설정
-                        if(binding.breakfastLayout.breakfastLayout.visibility == View.VISIBLE ||
-                            binding.lunchLayout.lunchLayout.visibility == View.VISIBLE ||
-                            binding.dinnerLayout.dinnerLayout.visibility == View.VISIBLE){
-                            binding.emptyText.visibility = View.GONE
-                        } else{
-                            binding.emptyText.visibility = View.VISIBLE
-                        }
-                }
-                show()
-            }
-        }
+
+        fetchBreakfastData()
+        fetchLunchData()
+        fetchDinnerData()
     }
 
     private fun fetchBreakfastData() {
@@ -171,12 +118,20 @@ class ListFragment : Fragment() {
         val storage = MyApplication.storage
         val storageRef = storage.reference.child("meals/breakfast")
         storageRef.listAll().addOnSuccessListener { listResult ->
+            val breakfastList = mutableListOf<Meal>()
             for(item in listResult.items){
                 item.getBytes(1024*1024).addOnSuccessListener { bytes ->
                     val mealData = bytes.toString(Charsets.UTF_8)
                     val meal = parseMealData(mealData)
                     breakfastList.add(meal)
-                    updateUI()
+
+                    // RecyclerView Adapter 업데이트
+                    val binding = FragmentListBinding.bind(requireView())
+                    val breakfastAdapter = BreakfastAdapter(breakfastList){updateSums()}
+                    binding.breakfastLayout.breakfastListRecyclerView.adapter = breakfastAdapter
+                    binding.breakfastLayout.breakfastListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    binding.breakfastLayout.breakfastListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                    updateSums()
                 }
                     .addOnFailureListener { exception ->
                         Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
@@ -188,17 +143,26 @@ class ListFragment : Fragment() {
                 Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
             }
     }
+
     private fun fetchLunchData() {
         // Firebase Storage에서 점심 식사 데이터 가져오기
         val storage = MyApplication.storage
         val storageRef = storage.reference.child("meals/lunch")
         storageRef.listAll().addOnSuccessListener { listResult ->
+            val lunchList = mutableListOf<Meal>()
             for(item in listResult.items){
                 item.getBytes(1024*1024).addOnSuccessListener { bytes ->
                     val mealData = bytes.toString(Charsets.UTF_8)
                     val meal = parseMealData(mealData)
                     lunchList.add(meal)
-                    updateUI()
+
+                    // RecyclerView Adapter 업데이트
+                    val binding = FragmentListBinding.bind(requireView())
+                    val lunchAdapter = LunchAdapter(lunchList){updateSums()}
+                    binding.lunchLayout.lunchListRecyclerView.adapter = lunchAdapter
+                    binding.lunchLayout.lunchListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    binding.lunchLayout.lunchListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                    updateSums()
                 }
                     .addOnFailureListener { exception ->
                         Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
@@ -214,12 +178,20 @@ class ListFragment : Fragment() {
         val storage = MyApplication.storage
         val storageRef = storage.reference.child("meals/dinner")
         storageRef.listAll().addOnSuccessListener { listResult ->
+            val dinnerList = mutableListOf<Meal>()
             for(item in listResult.items){
                 item.getBytes(1024*1024).addOnSuccessListener { bytes ->
                     val mealData = bytes.toString(Charsets.UTF_8)
                     val meal = parseMealData(mealData)
                     dinnerList.add(meal)
-                    updateUI()
+
+                    // RecyclerView Adapter 업데이트
+                    val binding = FragmentListBinding.bind(requireView())
+                    val dinnerAdapter = DinnerAdapter(dinnerList){updateSums()}
+                    binding.dinnerLayout.dinnerListRecyclerView.adapter = dinnerAdapter
+                    binding.dinnerLayout.dinnerListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    binding.dinnerLayout.dinnerListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+                    updateSums()
                 }
                     .addOnFailureListener { exception ->
                         Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
@@ -229,43 +201,6 @@ class ListFragment : Fragment() {
             .addOnFailureListener { exception ->
                 Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
             }
-    }
-    private fun updateUI(){
-        val binding = FragmentListBinding.bind(requireView())
-
-        if (context != null && isAdded) {
-            if(isBreakfastVisible == true){
-                binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
-
-                val breakfastAdapter = BreakfastAdapter(breakfastList){updateSums()}
-                binding.breakfastLayout.breakfastListRecyclerView.adapter = breakfastAdapter
-                binding.breakfastLayout.breakfastListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                binding.breakfastLayout.breakfastListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
-                updateSums()
-            }
-
-            if(isLunchVisible == true){
-                binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
-
-                val lunchAdapter = LunchAdapter(lunchList){updateSums()}
-                binding.lunchLayout.lunchListRecyclerView.adapter = lunchAdapter
-                binding.lunchLayout.lunchListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                binding.lunchLayout.lunchListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
-                updateSums()
-            }
-
-            if(isDinnerVisible == true){
-                binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
-
-                val dinnerAdapter = DinnerAdapter(dinnerList){updateSums()}
-                binding.dinnerLayout.dinnerListRecyclerView.adapter = dinnerAdapter
-                binding.dinnerLayout.dinnerListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                binding.dinnerLayout.dinnerListRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
-                updateSums()
-            }
-        }
-        else
-            Toast.makeText(context, "잠시만 기다려 주세요", Toast.LENGTH_SHORT).show()
     }
     private fun parseMealData(mealData: String) : Meal{
         val mealInfoList = mealData.split(",")
@@ -279,6 +214,7 @@ class ListFragment : Fragment() {
     }
 
     private fun calculateSum(mealList : MutableList<Meal>) : Meal{
+
         val calorieSum = mealList.sumBy { it.kcal }
         val carbohydrateSum = mealList.sumBy { it.carbohydrate }
         val proteinSum = mealList.sumBy { it.protein }
@@ -315,6 +251,7 @@ class ListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         val binding = FragmentListBinding.bind(requireView())
+
         binding.toolbar.title = "식사 기록"
         binding.toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         binding.date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
