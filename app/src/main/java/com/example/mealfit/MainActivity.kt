@@ -15,7 +15,6 @@ import com.example.mealfit.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     //private val key = "71bdb826d7084a3cb4c7"
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: ListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +36,10 @@ class MainActivity : AppCompatActivity() {
                 show()
             }
         }
+
+        else if(previousActivity == "SearchRecord")
+            supportFragmentManager.beginTransaction().replace(R.id.containers, ListFragment()).commit()
+
         // 그 외의 경우 HomeFragment로 이동
         else {
             Log.d("MainActivity", "Starting HomeFragment")
