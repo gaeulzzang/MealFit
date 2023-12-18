@@ -75,35 +75,12 @@
             android:paddingTop="20dp"
             android:paddingRight="15dp"
             android:paddingLeft="15dp">
-            <TextView
-                android:id="@+id/empty_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="식사를 기록해보세요!"
-                android:textColor="@color/subTextColor"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:visibility="visible"/>
             <include layout="@layout/breakfast_layout"
-                android:id="@+id/breakfast_layout"
-                android:visibility="gone" />
+                android:id="@+id/breakfast_layout" />
             <include layout="@layout/lunch_layout"
-                android:id="@+id/lunch_layout"
-                android:visibility="gone"/>
+                android:id="@+id/lunch_layout" />
             <include layout="@layout/dinner_layout"
-                android:id="@+id/dinner_layout"
-                android:visibility="gone"/>
+                android:id="@+id/dinner_layout" />
         </LinearLayout>
     </ScrollView>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_meal_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_input_add"
-        android:tint="@color/black"
-        android:backgroundTint="@color/white">
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 </androidx.constraintlayout.widget.ConstraintLayout>

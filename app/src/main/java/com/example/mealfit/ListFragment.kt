@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -73,18 +74,6 @@ class ListFragment : Fragment() {
             intent.putExtra("dinner", true)
             startActivity(intent)
         }
-
-        // 식사 삭제 버튼 누를 경우
-        binding.breakfastLayout.breakfastDeleteBtn.setOnClickListener{
-            createDeleteConfirmationDialog(binding.breakfastLayout.breakfastLayout, "아침")
-        }
-        binding.lunchLayout.lunchDeleteBtn.setOnClickListener{
-            createDeleteConfirmationDialog(binding.lunchLayout.lunchLayout, "점심")
-        }
-        binding.dinnerLayout.dinnerDeleteBtn.setOnClickListener{
-            createDeleteConfirmationDialog(binding.dinnerLayout.dinnerLayout, "저녁")
-        }
-
         return binding.root
     }
 
@@ -118,50 +107,7 @@ class ListFragment : Fragment() {
             currentDate.add(Calendar.DATE, 1)
             updateDate()
         }
-        binding.addMealFab.setOnClickListener{
-            val items = arrayOf<String>("아침", "점심", "저녁")
-            AlertDialog.Builder(requireContext()).run{
-                setTitle("식사 추가하기")
-                setItems(items){ _, which ->
-                    when(which){
-                        0 -> {
-                            if (binding.breakfastLayout.breakfastLayout.visibility != View.VISIBLE) {
-                                Toast.makeText(requireContext(), "아침 식사 추가", Toast.LENGTH_SHORT).show()
-                                binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
-                                isBreakfastVisible = true
-                            } else {
-                                Toast.makeText(requireContext(), "이미 아침 식사가 존재합니다", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        1 -> {
-                            if (binding.lunchLayout.lunchLayout.visibility != View.VISIBLE) {
-                                Toast.makeText(requireContext(), "점심 식사 추가", Toast.LENGTH_SHORT).show()
-                                binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
-                            } else {
-                                Toast.makeText(requireContext(), "이미 점심 식사가 존재합니다", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        2 -> {
-                            if (binding.dinnerLayout.dinnerLayout.visibility != View.VISIBLE) {
-                                Toast.makeText(requireContext(), "저녁 식사 추가", Toast.LENGTH_SHORT).show()
-                                binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
-                            } else {
-                                Toast.makeText(requireContext(), "이미 저녁 식사가 존재합니다", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                    // 적어도 하나가 visible이면 empty_text를 gone으로 설정
-                        if(binding.breakfastLayout.breakfastLayout.visibility == View.VISIBLE ||
-                            binding.lunchLayout.lunchLayout.visibility == View.VISIBLE ||
-                            binding.dinnerLayout.dinnerLayout.visibility == View.VISIBLE){
-                            binding.emptyText.visibility = View.GONE
-                        } else{
-                            binding.emptyText.visibility = View.VISIBLE
-                        }
-                }
-                show()
-            }
-        }
+
         fetchBreakfastData()
         fetchLunchData()
         fetchDinnerData()

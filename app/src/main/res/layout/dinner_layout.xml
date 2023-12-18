@@ -33,14 +33,6 @@
             android:textColor="@color/black"
             android:layout_gravity="center"
             android:layout_marginRight="90dp"/>
-        <ImageButton
-            android:id="@+id/dinner_delete_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_notification_clear_all"
-            android:scaleType="fitCenter"
-            android:background="@null"
-            app:tint="@color/subTextColor" />
     </LinearLayout>
 
     <LinearLayout
@@ -82,7 +74,6 @@
         android:id="@+id/dinner_add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="10dp"
         android:paddingHorizontal="10dp"
         android:background="@drawable/btn_round"
         android:drawableLeft="@android:drawable/ic_input_add"

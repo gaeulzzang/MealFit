@@ -38,6 +38,9 @@ interface MealSelectionListener{
 class SearchRecord : AppCompatActivity(), SearchRecordAdapter.OnItemClickListener,
 MealSelectionListener{
     private var menuList = arrayListOf<Meal>()
+    var isBreakfast = false
+    var isLunch = false
+    var isDinner = false
 //    식단 api 불러오기
 //    private fun getFoodInfo(){
 //
@@ -106,14 +109,15 @@ MealSelectionListener{
                 searchAdapter.notifyDataSetChanged()
             }
         })
-
+        isBreakfast = intent.getBooleanExtra("breakfast", false)
+        isLunch = intent.getBooleanExtra("lunch", false)
+        isDinner = intent.getBooleanExtra("dinner", false)
         enrollStartButton.setOnClickListener() {
             val intent = Intent(this, EnrollRecord::class.java)
             // 현재 액티비티의 인텐트 정보를 가져와서 EnrollRecord로 전달
-            val extras = intent.extras
-            if (extras != null) {
-                intent.putExtras(extras)
-            }
+            intent.putExtra("breakfast", isBreakfast)
+            intent.putExtra("lunch", isLunch)
+            intent.putExtra("dinner", isDinner)
             startActivity(intent)
         }
     }
