@@ -2,6 +2,7 @@ package com.example.mealfit
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -83,12 +84,13 @@ class HomeFragment : Fragment() {
                     val mealData = bytes.toString(Charsets.UTF_8)
                     val meal = parseMealData(mealData)
                     breakfastList.add(meal)
+                    updateUI()
                 }
                     .addOnFailureListener { exception ->
                         Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
                     }
             }
-            updateUI()
+
         }
             .addOnFailureListener { exception ->
                 Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
@@ -106,12 +108,13 @@ class HomeFragment : Fragment() {
                     val mealData = bytes.toString(Charsets.UTF_8)
                     val meal = parseMealData(mealData)
                     lunchList.add(meal)
+                    updateUI()
                 }
                     .addOnFailureListener { exception ->
                         Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
                     }
             }
-            updateUI()
+
         }
             .addOnFailureListener { exception ->
                 Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
@@ -127,12 +130,13 @@ class HomeFragment : Fragment() {
                     val mealData = bytes.toString(Charsets.UTF_8)
                     val meal = parseMealData(mealData)
                     dinnerList.add(meal)
+                    updateUI()
                 }
                     .addOnFailureListener { exception ->
                         Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
                     }
             }
-            updateUI()
+
         }
             .addOnFailureListener { exception ->
                 Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
@@ -161,7 +165,7 @@ class HomeFragment : Fragment() {
             val proteinG = breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
             val proteinPercent = if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
             val fatG = breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
-            val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
+            val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat * 100) else 0
 
             val binding = FragmentHomeBinding.bind(requireView())
             if(carbohydratePercent > 100 && proteinPercent > 100 && fatPercent > 100){
@@ -175,7 +179,10 @@ class HomeFragment : Fragment() {
                         val adapter = MyHomeAdapter(carbohydrateMenuInfo)
                         binding.homeRecyclerView.layoutManager = layoutManager
                         binding.homeRecyclerView.adapter = adapter
-                        Toast.makeText(requireContext(), "탄수화물 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                        val toast = Toast.makeText(requireContext(), "탄수화물 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT)
+                        toast.show()
+                        Handler().postDelayed(Runnable{
+                            run(){ toast.cancel() } }, 700)
                     }
                     proteinPercent -> {
                         val proteinMenuInfo = filterHighProteinFoods(recommendedProtein, proteinG)
@@ -183,7 +190,10 @@ class HomeFragment : Fragment() {
                         val adapter = MyHomeAdapter(proteinMenuInfo)
                         binding.homeRecyclerView.layoutManager = layoutManager
                         binding.homeRecyclerView.adapter = adapter
-                        Toast.makeText(requireContext(), "단백질 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                        val toast = Toast.makeText(requireContext(), "단백질 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT)
+                        toast.show()
+                        Handler().postDelayed(Runnable{
+                            run(){ toast.cancel() } }, 700)
                     }
                     fatPercent -> {
                         val fatMenuInfo = filterHighFatFoods(recommendedFat, fatG)
@@ -191,7 +201,10 @@ class HomeFragment : Fragment() {
                         val adapter = MyHomeAdapter(fatMenuInfo)
                         binding.homeRecyclerView.layoutManager = layoutManager
                         binding.homeRecyclerView.adapter = adapter
-                        Toast.makeText(requireContext(), "지방 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                        val toast = Toast.makeText(requireContext(), "지방 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT)
+                        toast.show()
+                        Handler().postDelayed(Runnable{
+                            run(){ toast.cancel() } }, 700)
                     }
                 }
             }
@@ -220,19 +233,10 @@ class HomeFragment : Fragment() {
 
         inputStream.close()
 
-        // 필터링된 탄수화물 음식 중 상위 3개 리스트만 추린다.
-        val top3HighCarbohydrateFoods = arrayListOf<Meal>()
-        val random = java.util.Random()
-        val size = highCarbohydrateFoods.size
-        val selectedIndexes = mutableSetOf<Int>()
-        while (selectedIndexes.size < 3) {
-            val randomIndex = random.nextInt(size)
-            selectedIndexes.add(randomIndex)
-        }
-        for (i in 0..2){
-            if(i < highCarbohydrateFoods.size)
-                top3HighCarbohydrateFoods.add(highCarbohydrateFoods[i])
-        }
+        // 필터링된 탄수화물 음식 중 탄수화물이 가장 높은 상위 3개 리스트만 추린다.
+        val sortedByCarbohydrate = highCarbohydrateFoods.sortedByDescending { it.carbohydrate }
+        val top3HighCarbohydrateFoods = ArrayList(sortedByCarbohydrate.take(3))
+
         return top3HighCarbohydrateFoods
     }
 
@@ -259,18 +263,8 @@ class HomeFragment : Fragment() {
         inputStream.close()
 
         // 필터링된 단백질 음식 중 상위 3개 리스트만 추린다.
-        val top3HighProteinFoods = arrayListOf<Meal>()
-        val random = java.util.Random()
-        val size = highProteinFoods.size
-        val selectedIndexes = mutableSetOf<Int>()
-        while (selectedIndexes.size < 3) {
-            val randomIndex = random.nextInt(size)
-            selectedIndexes.add(randomIndex)
-        }
-        for (i in selectedIndexes){
-            if(i < highProteinFoods.size)
-                top3HighProteinFoods.add(highProteinFoods[i])
-        }
+        val sortedByProtein = highProteinFoods.sortedByDescending { it.protein }
+        val top3HighProteinFoods = ArrayList(sortedByProtein.take(3))
         return top3HighProteinFoods
     }
     private fun filterHighFatFoods(recommendedFat: Int, fatG: Int) : ArrayList<Meal>{
@@ -296,18 +290,8 @@ class HomeFragment : Fragment() {
        inputStream.close()
 
        // 필터링된 지방 음식 중 상위 3개 리스트만 추린다.
-       val top3HighFatFoods = arrayListOf<Meal>()
-        val random = java.util.Random()
-        val size = highFatFoods.size
-        val selectedIndexes = mutableSetOf<Int>()
-        while (selectedIndexes.size < 3) {
-            val randomIndex = random.nextInt(size)
-            selectedIndexes.add(randomIndex)
-        }
-            for (i in 0..2){
-                if(i < highFatFoods.size)
-                    top3HighFatFoods.add(highFatFoods[i])
-            }
+        val sortedByFat = highFatFoods.sortedByDescending { it.fat }
+         val top3HighFatFoods = ArrayList(sortedByFat.take(3))
          return top3HighFatFoods
    }
     private fun getValueFromCell(cell: Cell): Int {

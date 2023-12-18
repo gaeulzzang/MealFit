@@ -169,7 +169,7 @@ class ConsumptionFragment : Fragment() {
             val proteinG = breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
             val proteinPercent = if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
             val fatG = breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
-            val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
+            val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat * 100) else 0
 
             binding.calorieKcal.text = totalCalorieAmount.toString() + "kcal"
             binding.caloriePercent.text = totalCaloriePercent.toString() + "%"
