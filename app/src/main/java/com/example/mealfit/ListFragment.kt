@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.FragmentListBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Calendar
 
 class ListFragment : Fragment() {

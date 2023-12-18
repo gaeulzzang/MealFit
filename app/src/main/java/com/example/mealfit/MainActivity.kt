@@ -36,9 +36,11 @@ class MainActivity : AppCompatActivity() {
                 show()
             }
         }
-
-        else if(previousActivity == "SearchRecord")
-            supportFragmentManager.beginTransaction().replace(R.id.containers, ListFragment()).commit()
+        else if(previousActivity == "SearchRecord") {
+            supportFragmentManager.beginTransaction().replace(R.id.containers, ListFragment())
+                .commit()
+            binding.bottomNavigation.selectedItemId = R.id.list_tab
+        }
 
         // 그 외의 경우 HomeFragment로 이동
         else {
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction().replace(R.id.containers, HomeFragment()).commit()
             binding.bottomNavigation.selectedItemId = R.id.home_tab
         }
+
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when(item.itemId){
                 R.id.home_tab -> supportFragmentManager.beginTransaction().replace(R.id.containers, HomeFragment()).commit()
