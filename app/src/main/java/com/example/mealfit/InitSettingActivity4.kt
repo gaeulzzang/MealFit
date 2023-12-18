@@ -50,10 +50,6 @@ class InitSettingActivity4 : AppCompatActivity() {
 
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("previousActivity", "InitSettingActivity4")
-            intent.putExtra("carbohydrateAmount", carbohydrateAmount.text.toString())
-            intent.putExtra("proteinAmount", proteinAmount.text.toString())
-            intent.putExtra("fatAmount", fatAmount.text.toString())
-            intent.putExtra("totalCalorieAmount", binding.totalCalorieAmount.text.toString())
             startActivity(intent)
         }
     }
