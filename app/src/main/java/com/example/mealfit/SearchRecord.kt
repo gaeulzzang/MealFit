@@ -67,9 +67,6 @@ MealSelectionListener{
         super.onCreate(savedInstanceState)
         val binding = RecordSearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_close_clear_cancel)
 
 //        getFoodInfo()
 
@@ -77,7 +74,8 @@ MealSelectionListener{
         val menuRecyclerView : RecyclerView = binding.menuRecyclerView
         menuList = readExcelFileFromAssets()
         val searchAdapter = SearchRecordAdapter(menuList, this)
-        val enrollStartButton: TextView = binding.enrollStartButton
+        val enrollStartBtn: TextView = binding.enrollStartBtn
+        val exitBtn: ImageButton = binding.exitBtn
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -112,7 +110,15 @@ MealSelectionListener{
         isBreakfast = intent.getBooleanExtra("breakfast", false)
         isLunch = intent.getBooleanExtra("lunch", false)
         isDinner = intent.getBooleanExtra("dinner", false)
-        enrollStartButton.setOnClickListener() {
+
+        exitBtn.setOnClickListener() {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("previousActivity", "SearchRecord")
+            startActivity(intent)
+            //supportFragmentManager.beginTransaction().replace(com.example.mealfit.R.id.containers, ListFragment()).commit()
+        }
+
+        enrollStartBtn.setOnClickListener() {
             val intent = Intent(this, EnrollRecord::class.java)
             // 현재 액티비티의 인텐트 정보를 가져와서 EnrollRecord로 전달
             intent.putExtra("breakfast", isBreakfast)
@@ -123,15 +129,7 @@ MealSelectionListener{
     }
 
     // 뒤로 가기 버튼 클릭 시 기록 탭으로 돌아옴
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.home -> {
-                onBackPressedDispatcher.onBackPressed()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+
     override fun onItemClick(position: Int) {
         val selectedMeal = menuList[position]
         onMealSelected(selectedMeal)
