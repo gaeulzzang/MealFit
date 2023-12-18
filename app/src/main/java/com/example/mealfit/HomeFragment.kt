@@ -1,17 +1,31 @@
 package com.example.mealfit
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mealfit.databinding.FragmentHomeBinding
+import org.apache.poi.hssf.usermodel.HSSFCell
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.usermodel.*
+import java.io.File
+import java.io.FileInputStream
 import java.util.Calendar
+import kotlin.random.Random
 
 class HomeFragment : Fragment() {
     private var currentDate = Calendar.getInstance()
+    val breakfastList = mutableListOf<Meal>()
+    val lunchList = mutableListOf<Meal>()
+    val dinnerList = mutableListOf<Meal>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -21,17 +35,18 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        var menuInfo = mutableListOf<Meal>()
         val binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        val layoutManager = LinearLayoutManager(activity)
-        val adapter = MyHomeAdapter(menuInfo)
-        binding.homeRecyclerView.layoutManager = layoutManager
-        binding.homeRecyclerView.adapter = adapter
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fetchBreakfastData()
+        fetchLunchData()
+        fetchDinnerData()
+
         val toolbar = requireActivity().findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         toolbar.title = "오늘의 추천 식단"
         toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
@@ -57,14 +72,249 @@ class HomeFragment : Fragment() {
         date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         updateDate()
     }
-    private fun loadMenuFromDatabase() : MutableList<Meal>{
-        val menuInfo = mutableListOf<Meal>()
+    private fun fetchBreakfastData() {
+        // Firebase Storage에서 아침 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/breakfast")
+        storageRef.listAll().addOnSuccessListener { listResult ->
 
-        return menuInfo
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    breakfastList.add(meal)
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
+                    }
+            }
+            updateUI()
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
+            }
     }
-    private fun recommendMenu(menuInfo: MutableList<Meal>) : MutableList<Meal>{
-        val recommendedMenu = mutableListOf<Meal>()
-        return recommendedMenu
+
+    private fun fetchLunchData() {
+        // Firebase Storage에서 점심 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/lunch")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    lunchList.add(meal)
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
+                    }
+            }
+            updateUI()
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchLunchData", "Failed to list items: ${exception.message}")
+            }
+    }
+    private fun fetchDinnerData() {
+        // Firebase Storage에서 저녁 식사 데이터 가져오기
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("meals/dinner")
+        storageRef.listAll().addOnSuccessListener { listResult ->
+            for(item in listResult.items){
+                item.getBytes(1024*1024).addOnSuccessListener { bytes ->
+                    val mealData = bytes.toString(Charsets.UTF_8)
+                    val meal = parseMealData(mealData)
+                    dinnerList.add(meal)
+                }
+                    .addOnFailureListener { exception ->
+                        Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
+                    }
+            }
+            updateUI()
+        }
+            .addOnFailureListener { exception ->
+                Log.e("fetchDinnerData", "Failed to list items: ${exception.message}")
+            }
+    }
+
+    private fun parseMealData(mealData: String) : Meal{
+        val mealInfoList = mealData.split(",")
+        val mealName = mealInfoList[0].substringAfter("Name: ").trim().toString()
+        val mealSize = mealInfoList[1].substringAfter("Size: ").trim().toInt()
+        val mealCalorie = mealInfoList[2].substringAfter("Kcal: ").trim().toInt()
+        val mealCarbohydrate = mealInfoList[3].substringAfter("Carbohydrate: ").trim().toInt()
+        val mealProtein = mealInfoList[4].substringAfter("Protein: ").trim().toInt()
+        val mealFat = mealInfoList[5].substringAfter("Fat: ").trim().toInt()
+        return Meal(mealName, mealSize, mealCalorie, mealCarbohydrate, mealProtein, mealFat)
+    }
+    private fun updateUI(){
+        val sharedPreference = requireContext().getSharedPreferences("nutr info", Context.MODE_PRIVATE)
+        val recommendedCarbohydrate = sharedPreference.getInt("recommendedCarbohydrate", 0)
+        val recommendedProtein = sharedPreference.getInt("recommendedProtein", 0)
+        val recommendedFat = sharedPreference.getInt("recommendedFat", 0)
+
+        val carbohydrateG = breakfastList.sumBy { it.carbohydrate } + lunchList.sumBy { it.carbohydrate } + dinnerList.sumBy { it.carbohydrate }
+        val carbohydratePercent = if (recommendedCarbohydrate != 0) Math.round(carbohydrateG.toFloat() / recommendedCarbohydrate * 100) else 0
+        val proteinG = breakfastList.sumBy { it.protein } + lunchList.sumBy { it.protein } + dinnerList.sumBy { it.protein }
+        val proteinPercent = if (recommendedProtein != 0) Math.round(proteinG.toFloat() / recommendedProtein * 100) else 0
+        val fatG = breakfastList.sumBy { it.fat } + lunchList.sumBy { it.fat } + dinnerList.sumBy { it.fat }
+        val fatPercent = if (recommendedFat != 0) Math.round(fatG.toFloat() / recommendedFat) * 100 else 0
+
+        val binding = FragmentHomeBinding.bind(requireView())
+        if(carbohydratePercent > 100 && proteinPercent > 100 && fatPercent > 100){
+            Toast.makeText(requireContext(), "탄수화물, 단백질, 지방 함량이 모두 권장량을 초과했습니다.", Toast.LENGTH_SHORT).show()
+        }else{
+            val smallestValue = minOf(carbohydratePercent, proteinPercent, fatPercent)
+            when(smallestValue){
+                carbohydratePercent -> {
+                    val carbohydrateMenuInfo = filterHighCarbohydrateFoods(recommendedCarbohydrate, carbohydrateG)
+                    val layoutManager = LinearLayoutManager(activity)
+                    val adapter = MyHomeAdapter(carbohydrateMenuInfo)
+                    binding.homeRecyclerView.layoutManager = layoutManager
+                    binding.homeRecyclerView.adapter = adapter
+                    Toast.makeText(requireContext(), "탄수화물 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                }
+                proteinPercent -> {
+                    val proteinMenuInfo = filterHighProteinFoods(recommendedProtein, proteinG)
+                    val layoutManager = LinearLayoutManager(activity)
+                    val adapter = MyHomeAdapter(proteinMenuInfo)
+                    binding.homeRecyclerView.layoutManager = layoutManager
+                    binding.homeRecyclerView.adapter = adapter
+                    Toast.makeText(requireContext(), "단백질 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                }
+                fatPercent -> {
+                    val fatMenuInfo = filterHighFatFoods(recommendedFat, fatG)
+                    val layoutManager = LinearLayoutManager(activity)
+                    val adapter = MyHomeAdapter(fatMenuInfo)
+                    binding.homeRecyclerView.layoutManager = layoutManager
+                    binding.homeRecyclerView.adapter = adapter
+                    Toast.makeText(requireContext(), "지방 위주의 식단을 추천합니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    }
+
+    private fun filterHighCarbohydrateFoods(recommendedCarbohydrate: Int, carbohydrateG: Int) : ArrayList<Meal>{
+        val inputStream = requireContext().assets.open("foodDB.xls")
+        val workbook = HSSFWorkbook(inputStream)
+        val sheet : Sheet = workbook.getSheetAt(0)
+
+        val highCarbohydrateFoods = arrayListOf<Meal>()
+
+        for (rowIndex in 1..sheet.lastRowNum) {
+            val row = sheet.getRow(rowIndex)
+            val carbohydrateCell = getValueFromCell(row.getCell(4)) // 탄수화물 함량이 있는 열의 인덱스
+            if (carbohydrateCell != null && carbohydrateCell + carbohydrateG <= recommendedCarbohydrate){
+                val nameCell = row.getCell(1).stringCellValue // 음식 이름
+                val sizeCell = getValueFromCell(row.getCell(2))
+                val kcalCell = getValueFromCell(row.getCell(3))
+                val proteinCell = getValueFromCell(row.getCell(5))
+                val fatCell = getValueFromCell(row.getCell(6))
+                highCarbohydrateFoods.add(Meal(nameCell, sizeCell, kcalCell, carbohydrateCell, proteinCell, fatCell))
+            }
+        }
+
+        inputStream.close()
+
+        // 필터링된 탄수화물 음식 중 상위 3개 리스트만 추린다.
+        val top3HighCarbohydrateFoods = arrayListOf<Meal>()
+        val random = java.util.Random()
+        val size = highCarbohydrateFoods.size
+        val selectedIndexes = mutableSetOf<Int>()
+        while (selectedIndexes.size < 3) {
+            val randomIndex = random.nextInt(size)
+            selectedIndexes.add(randomIndex)
+        }
+        for (i in 0..2){
+            if(i < highCarbohydrateFoods.size)
+                top3HighCarbohydrateFoods.add(highCarbohydrateFoods[i])
+        }
+        return top3HighCarbohydrateFoods
+    }
+
+    private fun filterHighProteinFoods(recommendedProtein: Int, proteinG: Int) : ArrayList<Meal> {
+        val inputStream = requireContext().assets.open("foodDB.xls")
+        val workbook = HSSFWorkbook(inputStream)
+        val sheet : Sheet = workbook.getSheetAt(0)
+
+        val highProteinFoods = arrayListOf<Meal>()
+
+        for (rowIndex in 1..sheet.lastRowNum) {
+            val row = sheet.getRow(rowIndex)
+            val proteinCell = getValueFromCell(row.getCell(5)) // 단백질 함량이 있는 열의 인덱스
+            if (proteinCell != null && proteinCell + proteinG <= recommendedProtein){
+                val nameCell = row.getCell(1).stringCellValue // 음식 이름
+                val sizeCell = getValueFromCell(row.getCell(2))
+                val kcalCell = getValueFromCell(row.getCell(3))
+                val carbohydrateCell = getValueFromCell(row.getCell(4))
+                val fatCell = getValueFromCell(row.getCell(6))
+                highProteinFoods.add(Meal(nameCell, sizeCell, kcalCell, carbohydrateCell, proteinCell, fatCell))
+            }
+        }
+
+        inputStream.close()
+
+        // 필터링된 단백질 음식 중 상위 3개 리스트만 추린다.
+        val top3HighProteinFoods = arrayListOf<Meal>()
+        val random = java.util.Random()
+        val size = highProteinFoods.size
+        val selectedIndexes = mutableSetOf<Int>()
+        while (selectedIndexes.size < 3) {
+            val randomIndex = random.nextInt(size)
+            selectedIndexes.add(randomIndex)
+        }
+        for (i in selectedIndexes){
+            if(i < highProteinFoods.size)
+                top3HighProteinFoods.add(highProteinFoods[i])
+        }
+        return top3HighProteinFoods
+    }
+    private fun filterHighFatFoods(recommendedFat: Int, fatG: Int) : ArrayList<Meal>{
+       val inputStream = requireContext().assets.open("foodDB.xls")
+       val workbook = HSSFWorkbook(inputStream)
+       val sheet : Sheet = workbook.getSheetAt(0)
+
+       val highFatFoods = arrayListOf<Meal>()
+
+       for (rowIndex in 1..sheet.lastRowNum) {
+           val row = sheet.getRow(rowIndex)
+           val fatCell = getValueFromCell(row.getCell(6)) // 지방 함량이 있는 열의 인덱스
+           if (fatCell != null && fatCell + fatG <= recommendedFat){
+               val nameCell = row.getCell(1).stringCellValue // 음식 이름
+               val sizeCell = getValueFromCell(row.getCell(2))
+               val kcalCell = getValueFromCell(row.getCell(3))
+               val carbohydrateCell = getValueFromCell(row.getCell(4))
+               val proteinCell = getValueFromCell(row.getCell(5))
+               highFatFoods.add(Meal(nameCell, sizeCell, kcalCell, carbohydrateCell, proteinCell, fatCell))
+           }
+       }
+
+       inputStream.close()
+
+       // 필터링된 지방 음식 중 상위 3개 리스트만 추린다.
+       val top3HighFatFoods = arrayListOf<Meal>()
+        val random = java.util.Random()
+        val size = highFatFoods.size
+        val selectedIndexes = mutableSetOf<Int>()
+        while (selectedIndexes.size < 3) {
+            val randomIndex = random.nextInt(size)
+            selectedIndexes.add(randomIndex)
+        }
+            for (i in 0..2){
+                if(i < highFatFoods.size)
+                    top3HighFatFoods.add(highFatFoods[i])
+            }
+         return top3HighFatFoods
+   }
+    private fun getValueFromCell(cell: Cell): Int {
+        return when(cell?.cellType){
+            HSSFCell.CELL_TYPE_NUMERIC -> cell.numericCellValue.toInt()
+            HSSFCell.CELL_TYPE_STRING -> cell.stringCellValue.toDouble().toInt()
+            else -> 0
+        }
     }
     private fun updateDate(){
         val month = currentDate.get(Calendar.MONTH) + 1

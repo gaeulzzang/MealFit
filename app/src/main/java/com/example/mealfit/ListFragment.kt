@@ -32,11 +32,15 @@ class ListFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean("breakfastVisibility", viewModel.isBreakfastVisible)
+        outState.putBoolean("lunchVisibility", viewModel.isLunchVisible)
+        outState.putBoolean("dinnerVisibility", viewModel.isDinnerVisible)
         super.onSaveInstanceState(outState)
     }
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         viewModel.isBreakfastVisible = savedInstanceState?.getBoolean("breakfastVisibility", false) ?: false
+        viewModel.isLunchVisible = savedInstanceState?.getBoolean("lunchVisibility", false) ?: false
+        viewModel.isDinnerVisible = savedInstanceState?.getBoolean("dinnerVisibility", false) ?: false
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +51,12 @@ class ListFragment : Fragment() {
         if(viewModel.isBreakfastVisible){
             binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
         }
-
+        if(viewModel.isLunchVisible){
+            binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
+        }
+        if(viewModel.isDinnerVisible){
+            binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
+        }
         // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
         binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
