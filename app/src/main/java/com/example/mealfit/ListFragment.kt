@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,17 +23,20 @@ class ListFragment : Fragment() {
     private var currentDate = Calendar.getInstance()
     private var mealSelectionListener: MealSelectionListener? = null
     private var isBreakfastVisible = false
+
+    private val viewModel by viewModels<ListViewModel>()
+
     fun setMealSelectionListener(listener: MealSelectionListener){
         mealSelectionListener = listener
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean("breakfastVisibility", view?.findViewById<View>(R.id.breakfast_layout)?.visibility == View.VISIBLE)
+        outState.putBoolean("breakfastVisibility", viewModel.isBreakfastVisible)
         super.onSaveInstanceState(outState)
     }
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        val isBreakfastVisible = savedInstanceState?.getBoolean("breakfastVisibility", false)
         super.onViewStateRestored(savedInstanceState)
+        viewModel.isBreakfastVisible = savedInstanceState?.getBoolean("breakfastVisibility", false) ?: false
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,22 +44,21 @@ class ListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentListBinding.inflate(layoutInflater, container, false)
-        if(isBreakfastVisible){
+        if(viewModel.isBreakfastVisible){
             binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
         }
+
         // 메뉴 추가하기 버튼을 누르면 메뉴 검색 페이지로 이동함
         binding.breakfastLayout.breakfastAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
             intent.putExtra("breakfast", true)
             startActivity(intent)
         }
-
         binding.lunchLayout.lunchAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
             intent.putExtra("lunch", true)
             startActivity(intent)
         }
-
         binding.dinnerLayout.dinnerAddBtn.setOnClickListener{
             val intent = Intent(requireContext(), SearchRecord::class.java)
             intent.putExtra("dinner", true)
@@ -65,11 +69,9 @@ class ListFragment : Fragment() {
         binding.breakfastLayout.breakfastDeleteBtn.setOnClickListener{
             createDeleteConfirmationDialog(binding.breakfastLayout.breakfastLayout, "아침")
         }
-
         binding.lunchLayout.lunchDeleteBtn.setOnClickListener{
             createDeleteConfirmationDialog(binding.lunchLayout.lunchLayout, "점심")
         }
-
         binding.dinnerLayout.dinnerDeleteBtn.setOnClickListener{
             createDeleteConfirmationDialog(binding.dinnerLayout.dinnerLayout, "저녁")
         }
@@ -91,6 +93,7 @@ class ListFragment : Fragment() {
             create().show() // 다이얼로그를 보여줍니다.
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentListBinding.bind(view)

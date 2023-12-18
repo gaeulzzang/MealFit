@@ -23,23 +23,15 @@
             app:contentInsetStart="0dp">
             <EditText
                 android:id="@+id/editTextSearch"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:hint="검색할 메뉴를 입력하세요"
                 android:textColorHint="@color/subTextColor"
                 android:textColor="@color/black"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"/>
-            <ImageButton
-                android:id="@+id/fin_btn"
-                app:tint="@color/black"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/check_circle" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

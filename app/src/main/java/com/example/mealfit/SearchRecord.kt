@@ -74,7 +74,6 @@ MealSelectionListener{
         val menuRecyclerView : RecyclerView = binding.menuRecyclerView
         menuList = readExcelFileFromAssets()
         val searchAdapter = SearchRecordAdapter(menuList, this)
-        val finBtn : ImageButton = binding.finBtn
         val enrollStartButton: TextView = binding.enrollStartButton
         menuRecyclerView.adapter = searchAdapter
         menuRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -117,12 +116,6 @@ MealSelectionListener{
             }
             startActivity(intent)
         }
-
-        finBtn.setOnClickListener(){
-            //supportFragmentManager.beginTransaction().replace(R.id.containers, ListFragment()).commit()
-//            val intent = Intent(this, ListFragment::class.java)
-//            startActivity(intent)
-        }
     }
 
     // 뒤로 가기 버튼 클릭 시 기록 탭으로 돌아옴
@@ -161,9 +154,9 @@ MealSelectionListener{
         val uploadTask = storageRef.putBytes(mealData) // Firebase Storage에 업로드
         uploadTask.addOnFailureListener {
             Log.d("SearchRecord", "onFailure: ${it}")
-            Toast.makeText(this, "${meal.name}을/를 저장하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "'${meal.name}' 을/를 저장하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
         }.addOnSuccessListener {
-            Toast.makeText(this, "${meal.name}을/를 저장했습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "'${meal.name}' 을/를 저장했습니다.", Toast.LENGTH_SHORT).show()
             // ListFragment로 돌아가기
         }
     }
