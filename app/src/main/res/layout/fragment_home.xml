@@ -70,6 +70,7 @@
             android:layout_marginBottom="30dp">
         </androidx.recyclerview.widget.RecyclerView>
         <TextView
+            android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@android:drawable/ic_menu_info_details"
@@ -80,6 +81,7 @@
             android:textSize="15sp"
             android:gravity="center" />
         <TextView
+            android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="섭취량을 조절해보세요!"
