@@ -43,10 +43,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        fetchBreakfastData()
-        fetchLunchData()
-        fetchDinnerData()
+        val binding = FragmentHomeBinding.bind(view)
 
         val toolbar = requireActivity().findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         toolbar.title = "오늘의 추천 식단"
@@ -57,10 +54,48 @@ class HomeFragment : Fragment() {
         view.findViewById<android.widget.ImageButton>(R.id.arrow_left)?.setOnClickListener{
             currentDate.add(Calendar.DATE, -1)
             updateDate()
+
+            if(currentDate.get(Calendar.DAY_OF_MONTH) != Calendar.getInstance().get(Calendar.DAY_OF_MONTH) ||
+                currentDate.get(Calendar.DATE) != Calendar.getInstance().get(Calendar.DATE)){
+                binding.homeRecyclerView.visibility = View.GONE
+                binding.text1.visibility = View.GONE
+                binding.text2.visibility = View.GONE
+                Toast.makeText(requireContext(), "서비스 준비 중입니다", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                binding.homeRecyclerView.visibility = View.VISIBLE
+                binding.text1.visibility = View.VISIBLE
+                binding.text2.visibility = View.VISIBLE
+                fetchBreakfastData()
+                fetchLunchData()
+                fetchDinnerData()
+            }
         }
         view.findViewById<android.widget.ImageButton>(R.id.arrow_right)?.setOnClickListener{
             currentDate.add(Calendar.DATE, 1)
             updateDate()
+
+            if(currentDate.get(Calendar.DAY_OF_MONTH) != Calendar.getInstance().get(Calendar.DAY_OF_MONTH) ||
+                currentDate.get(Calendar.DATE) != Calendar.getInstance().get(Calendar.DATE)){
+                binding.homeRecyclerView.visibility = View.GONE
+                binding.text1.visibility = View.GONE
+                binding.text2.visibility = View.GONE
+                Toast.makeText(requireContext(), "서비스 준비 중입니다", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                binding.homeRecyclerView.visibility = View.VISIBLE
+                binding.text1.visibility = View.VISIBLE
+                binding.text2.visibility = View.VISIBLE
+                fetchBreakfastData()
+                fetchLunchData()
+                fetchDinnerData()
+            }
+        }
+        if (currentDate.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH) &&
+            currentDate.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)) {
+            fetchBreakfastData()
+            fetchLunchData()
+            fetchDinnerData()
         }
     }
 
