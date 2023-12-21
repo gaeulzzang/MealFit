@@ -42,10 +42,10 @@ class MyPageFragment : Fragment() {
         val recommendedProtein = sharedPreferenceNutr.getInt("recommendedProtein", 0)
         val recommendedFat = sharedPreferenceNutr.getInt("recommendedFat", 0)
 
-        binding.totalCalorieAmount.text = recommendedCalorie.toString()
-        binding.carbohydrateAmount.text = recommendedCarbohydrate.toString()
-        binding.proteinAmount.text = recommendedProtein.toString()
-        binding.fatAmount.text = recommendedFat.toString()
+        binding.totalCalorieAmount.text = recommendedCalorie.toString() + "kcal"
+        binding.carbohydrateAmount.text = recommendedCarbohydrate.toString() + "g"
+        binding.proteinAmount.text = recommendedProtein.toString() + "g"
+        binding.fatAmount.text = recommendedFat.toString() + "g"
 
         val sharedPreference = requireContext().getSharedPreferences("user info", MODE_PRIVATE)
         val nickname = sharedPreference.getString("nickname", "")
