@@ -9,10 +9,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginLeft
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -58,6 +60,9 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentListBinding.bind(view)
+        val parentLayout = binding.containers
+        val textView = TextView(requireContext())
+
         binding.toolbar.title = "식사 기록"
         binding.toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         binding.date.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
@@ -65,15 +70,51 @@ class ListFragment : Fragment() {
         binding.arrowLeft?.setOnClickListener{
             currentDate.add(Calendar.DATE, -1)
             updateDate()
+            if(currentDate.get(Calendar.DAY_OF_MONTH) != Calendar.getInstance().get(Calendar.DAY_OF_MONTH) ||
+                currentDate.get(Calendar.DATE) != Calendar.getInstance().get(Calendar.DATE)){
+                binding.breakfastLayout.breakfastLayout.visibility = View.GONE
+                binding.lunchLayout.lunchLayout.visibility = View.GONE
+                binding.dinnerLayout.dinnerLayout.visibility = View.GONE
+
+                Toast.makeText(requireContext(), "서비스 준비 중입니다", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
+                binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
+                binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
+
+                fetchBreakfastData()
+                fetchLunchData()
+                fetchDinnerData()
+            }
         }
         binding.arrowRight?.setOnClickListener{
             currentDate.add(Calendar.DATE, 1)
             updateDate()
-        }
+            if(currentDate.get(Calendar.DAY_OF_MONTH) != Calendar.getInstance().get(Calendar.DAY_OF_MONTH) ||
+                currentDate.get(Calendar.DATE) != Calendar.getInstance().get(Calendar.DATE)){
+                binding.breakfastLayout.breakfastLayout.visibility = View.GONE
+                binding.lunchLayout.lunchLayout.visibility = View.GONE
+                binding.dinnerLayout.dinnerLayout.visibility = View.GONE
 
-        fetchBreakfastData()
-        fetchLunchData()
-        fetchDinnerData()
+                Toast.makeText(requireContext(), "서비스 준비 중입니다", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                binding.breakfastLayout.breakfastLayout.visibility = View.VISIBLE
+                binding.lunchLayout.lunchLayout.visibility = View.VISIBLE
+                binding.dinnerLayout.dinnerLayout.visibility = View.VISIBLE
+
+                fetchBreakfastData()
+                fetchLunchData()
+                fetchDinnerData()
+            }
+        }
+        if (currentDate.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance().get(Calendar.DAY_OF_MONTH) &&
+            currentDate.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)) {
+            fetchBreakfastData()
+            fetchLunchData()
+            fetchDinnerData()
+        }
     }
 
     private fun fetchBreakfastData() {
@@ -100,7 +141,6 @@ class ListFragment : Fragment() {
                         Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")
                     }
             }
-
         }
             .addOnFailureListener { exception ->
                 Log.e("fetchBreakfastData", "Failed to list items: ${exception.message}")

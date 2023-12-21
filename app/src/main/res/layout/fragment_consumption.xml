@@ -64,6 +64,7 @@
         android:paddingRight="15dp"
         android:paddingLeft="15dp">
         <LinearLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/text_white_round"
