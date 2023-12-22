@@ -263,12 +263,12 @@ class HomeFragment : Fragment() {
         for (rowIndex in 1..sheet.lastRowNum) {
             val row = sheet.getRow(rowIndex)
             val carbohydrateCell = getValueFromCell(row.getCell(4)) // 탄수화물 함량이 있는 열의 인덱스
+            val proteinCell = getValueFromCell(row.getCell(5))
+            val fatCell = getValueFromCell(row.getCell(6))
             if (carbohydrateCell != null && carbohydrateCell + carbohydrateG <= recommendedCarbohydrate){
                 val nameCell = row.getCell(1).stringCellValue // 음식 이름
                 val sizeCell = getValueFromCell(row.getCell(2))
                 val kcalCell = getValueFromCell(row.getCell(3))
-                val proteinCell = getValueFromCell(row.getCell(5))
-                val fatCell = getValueFromCell(row.getCell(6))
                 highCarbohydrateFoods.add(Meal(nameCell, sizeCell, kcalCell, carbohydrateCell, proteinCell, fatCell))
             }
         }
