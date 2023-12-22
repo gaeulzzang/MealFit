@@ -1,8 +1,11 @@
 package com.example.mealfit
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.ListRecyclerviewBinding
 
@@ -29,7 +32,7 @@ RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         binding.menuDeleteBtn.setOnClickListener{
             val mealId = meal.name
-            deleteMealFromStorage(mealId) // Storage에서 음식 삭제
+            deleteMealFromStorage(mealId, holder.itemView.context) // Storage에서 음식 삭제
 
             breakfastList.removeAt(position)
             notifyDataSetChanged()
@@ -37,9 +40,11 @@ RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    private fun deleteMealFromStorage(mealId: String) {
+    private fun deleteMealFromStorage(mealId: String, context: Context) {
         val storage = MyApplication.storage
-        val storageRef = storage.reference.child("meals/breakfast/${mealId}.txt")
+        val sharedPreferenceUser = context.getSharedPreferences("user info", AppCompatActivity.MODE_PRIVATE)
+        val email = sharedPreferenceUser.getString("email", "")
+        val storageRef = storage.reference.child("${email}/meals/breakfast/${mealId}.txt")
         storageRef.delete().addOnSuccessListener {
             Log.d("Delete", "파일 삭제 성공")
         }.addOnFailureListener {

@@ -28,7 +28,7 @@
             android:id="@+id/lunch_calorie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="열량 400kcal"
+            android:text="열량 0 kcal"
             android:textSize="15sp"
             android:textColor="@color/black"
             android:layout_gravity="center"
@@ -48,20 +48,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="탄수화물 50g"
+            android:text="탄수화물 0 g"
             android:textColor="@color/black"/>
         <TextView
             android:id="@+id/lunch_protein"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="단백질 30g"
+            android:text="단백질 0 g"
             android:layout_weight="1"
             android:textColor="@color/black"/>
         <TextView
             android:id="@+id/lunch_fat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="지방 10g"
+            android:text="지방 0 g"
             android:textColor="@color/black"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView

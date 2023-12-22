@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginLeft
@@ -120,7 +121,9 @@ class ListFragment : Fragment() {
     private fun fetchBreakfastData() {
         // Firebase Storage에서 아침 식사 데이터 가져오기
         val storage = MyApplication.storage
-        val storageRef = storage.reference.child("meals/breakfast")
+        val sharedPreferenceUser = requireContext().getSharedPreferences("user info", AppCompatActivity.MODE_PRIVATE)
+        val email = sharedPreferenceUser.getString("email", "")
+        val storageRef = storage.reference.child("${email}/meals/breakfast")
         storageRef.listAll().addOnSuccessListener { listResult ->
             val breakfastList = mutableListOf<Meal>()
             for(item in listResult.items){
@@ -150,7 +153,9 @@ class ListFragment : Fragment() {
     private fun fetchLunchData() {
         // Firebase Storage에서 점심 식사 데이터 가져오기
         val storage = MyApplication.storage
-        val storageRef = storage.reference.child("meals/lunch")
+        val sharedPreferenceUser = requireContext().getSharedPreferences("user info", AppCompatActivity.MODE_PRIVATE)
+        val email = sharedPreferenceUser.getString("email", "")
+        val storageRef = storage.reference.child("${email}/meals/lunch")
         storageRef.listAll().addOnSuccessListener { listResult ->
             val lunchList = mutableListOf<Meal>()
             for(item in listResult.items){
@@ -179,7 +184,9 @@ class ListFragment : Fragment() {
     private fun fetchDinnerData() {
         // Firebase Storage에서 저녁 식사 데이터 가져오기
         val storage = MyApplication.storage
-        val storageRef = storage.reference.child("meals/dinner")
+        val sharedPreferenceUser = requireContext().getSharedPreferences("user info", AppCompatActivity.MODE_PRIVATE)
+        val email = sharedPreferenceUser.getString("email", "")
+        val storageRef = storage.reference.child("${email}/meals/dinner")
         storageRef.listAll().addOnSuccessListener { listResult ->
             val dinnerList = mutableListOf<Meal>()
             for(item in listResult.items){

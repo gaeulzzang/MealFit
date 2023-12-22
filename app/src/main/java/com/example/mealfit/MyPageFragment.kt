@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.mealfit.MyApplication.Companion.email
 import com.example.mealfit.databinding.FragmentMyPageBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -48,6 +49,7 @@ class MyPageFragment : Fragment() {
         binding.fatAmount.text = recommendedFat.toString() + "g"
 
         val sharedPreference = requireContext().getSharedPreferences("user info", MODE_PRIVATE)
+        val email = sharedPreference.getString("email", "")
         val nickname = sharedPreference.getString("nickname", "")
         val age = sharedPreference.getString("age", "")
         val height = sharedPreference.getString("height", "")
@@ -55,22 +57,22 @@ class MyPageFragment : Fragment() {
         binding.nickname.text = nickname
         binding.ageHeightWeight.text = age + "세 / " + height + "cm / " + weight + "kg"
 
-//        val storage = MyApplication.storage
-//        val storageRef = storage.reference.child("users/${nickname}.txt")
-//        val userInfo =
-//            "Nickname: $nickname, Age: $age, Height: $height, Weight: $weight, TotalCalorie: $totalCalorieAmount, Carbohydrate: $carbohydrateAmount, Protein: $proteinAmount, Fat: $fatAmount"
-//        val userData = userInfo.toByteArray()
-//        val uploadTask = storageRef.putBytes(userData)
-//        uploadTask.addOnFailureListener {
-//            Log.d("Upload", "사용자 정보 업로드 실패")
-//        }.addOnSuccessListener {
-//            Log.d("Upload", "사용자 정보 업로드 성공")
-//            val homeFragment = HomeFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString("nickname", nickname)
-//                }
-//            }
-//        }
+        val storage = MyApplication.storage
+        val storageRef = storage.reference.child("${email}/info/${email}.txt")
+        val userInfo =
+            "Nickname: $nickname, Age: $age, Height: $height, Weight: $weight, RecommendedCalorie: $recommendedCalorie, RecommendedCarbohydrate: $recommendedCarbohydrate, RecommendedProtein: $recommendedProtein, RecommendedFat: $recommendedFat"
+        val userData = userInfo.toByteArray()
+        val uploadTask = storageRef.putBytes(userData)
+        uploadTask.addOnFailureListener {
+            Log.d("Upload", "사용자 정보 업로드 실패")
+        }.addOnSuccessListener {
+            Log.d("Upload", "사용자 정보 업로드 성공")
+            val homeFragment = HomeFragment().apply {
+                arguments = Bundle().apply {
+                    putString("nickname", nickname)
+                }
+            }
+        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
