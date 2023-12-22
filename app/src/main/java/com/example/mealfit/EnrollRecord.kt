@@ -34,16 +34,20 @@ class EnrollRecord: AppCompatActivity() {
                 try {
                     // Firebase Storage에 새로운 메뉴 정보 저장하는 로직 추가
                     val storage = MyApplication.storage
+
+                    val sharedPreferenceUser = getSharedPreferences("user info", MODE_PRIVATE)
+                    val email = sharedPreferenceUser.getString("email", "")
+
                     // SearchRecord로부터 받은 인텐트 값을 확인하여 저장 경로 설정
                     val isBreakfast = intent.getBooleanExtra("breakfast", false)
                     val isLunch = intent.getBooleanExtra("lunch", false)
                     val isDinner = intent.getBooleanExtra("dinner", false)
                     Log.d("EnrollRecord", "isBreakfast: $isBreakfast, isLunch: $isLunch, isDinner: $isDinner")
                     val storageRef = when {
-                        isBreakfast -> storage.reference.child("meals/breakfast/${newMenuName}.txt")
-                        isLunch -> storage.reference.child("meals/lunch/${newMenuName}.txt")
-                        isDinner -> storage.reference.child("meals/dinner/${newMenuName}.txt")
-                        else -> storage.reference.child("meals/unknown/${newMenuName}.txt")
+                        isBreakfast -> storage.reference.child("${email}/meals/breakfast/${newMenuName}.txt")
+                        isLunch -> storage.reference.child("${email}/meals/lunch/${newMenuName}.txt")
+                        isDinner -> storage.reference.child("${email}/meals/dinner/${newMenuName}.txt")
+                        else -> storage.reference.child("${email}/meals/unknown/${newMenuName}.txt")
                     }
 
                     val menuInfo =

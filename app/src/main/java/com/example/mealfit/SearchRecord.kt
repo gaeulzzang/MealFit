@@ -12,6 +12,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealfit.databinding.RecordSearchBinding
@@ -142,15 +143,18 @@ MealSelectionListener{
         // Firebase Storage에 선택한 식사 저장
         val storage = MyApplication.storage
 
+        val sharedPreferenceUser = getSharedPreferences("user info", MODE_PRIVATE)
+        val email = sharedPreferenceUser.getString("email", "")
+
         val isBreakfast = intent.getBooleanExtra("breakfast", false)
         val isLunch = intent.getBooleanExtra("lunch", false)
         val isDinner = intent.getBooleanExtra("dinner", false)
 
         val storageRef = when{
-            isBreakfast -> storage.reference.child("meals/breakfast/${meal.name}.txt")
-            isLunch -> storage.reference.child("meals/lunch/${meal.name}.txt")
-            isDinner -> storage.reference.child("meals/dinner/${meal.name}.txt")
-            else -> storage.reference.child("meals/${meal.name}.txt")
+            isBreakfast -> storage.reference.child("${email}/meals/breakfast/${meal.name}.txt")
+            isLunch -> storage.reference.child("${email}/meals/lunch/${meal.name}.txt")
+            isDinner -> storage.reference.child("${email}/meals/dinner/${meal.name}.txt")
+            else -> storage.reference.child("${email}/meals/${meal.name}.txt")
         }
         // 식사 정보 문자열로 변환
         val mealInfo = "Name: ${meal.name}, Size: ${meal.size}, Kcal: ${meal.kcal}, Carbohydrate: ${meal.carbohydrate}, Protein: ${meal.protein}, Fat: ${meal.fat}"
