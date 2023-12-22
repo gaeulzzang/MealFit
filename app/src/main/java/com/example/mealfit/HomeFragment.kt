@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mealfit.databinding.FragmentHomeBinding
@@ -216,7 +217,7 @@ class HomeFragment : Fragment() {
                 val smallestValue = minOf(carbohydratePercent, proteinPercent, fatPercent)
                 when(smallestValue){
                     carbohydratePercent -> {
-                        val carbohydrateMenuInfo = filterHighCarbohydrateFoods(recommendedCarbohydrate, carbohydrateG)
+                        val carbohydrateMenuInfo = filterHighCarbohydrateFoods(recommendedCarbohydrate, carbohydrateG, recommendedProtein, proteinG, recommendedFat, fatG)
                         val layoutManager = LinearLayoutManager(activity)
                         val adapter = MyHomeAdapter(carbohydrateMenuInfo)
                         binding.homeRecyclerView.layoutManager = layoutManager
@@ -227,7 +228,7 @@ class HomeFragment : Fragment() {
                             run(){ toast.cancel() } }, 700)
                     }
                     proteinPercent -> {
-                        val proteinMenuInfo = filterHighProteinFoods(recommendedProtein, proteinG)
+                        val proteinMenuInfo = filterHighProteinFoods(recommendedCarbohydrate, carbohydrateG, recommendedProtein, proteinG, recommendedFat, fatG)
                         val layoutManager = LinearLayoutManager(activity)
                         val adapter = MyHomeAdapter(proteinMenuInfo)
                         binding.homeRecyclerView.layoutManager = layoutManager
@@ -238,7 +239,7 @@ class HomeFragment : Fragment() {
                             run(){ toast.cancel() } }, 700)
                     }
                     fatPercent -> {
-                        val fatMenuInfo = filterHighFatFoods(recommendedFat, fatG)
+                        val fatMenuInfo = filterHighFatFoods(recommendedCarbohydrate, carbohydrateG, recommendedProtein, proteinG, recommendedFat, fatG)
                         val layoutManager = LinearLayoutManager(activity)
                         val adapter = MyHomeAdapter(fatMenuInfo)
                         binding.homeRecyclerView.layoutManager = layoutManager
@@ -253,7 +254,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun filterHighCarbohydrateFoods(recommendedCarbohydrate: Int, carbohydrateG: Int) : ArrayList<Meal>{
+    private fun filterHighCarbohydrateFoods(recommendedCarbohydrate: Int, carbohydrateG: Int,
+                                            recommendedProtein: Int, proteinG: Int, recommendedFat: Int, fatG: Int) : ArrayList<Meal>{
         val inputStream = requireContext().assets.open("foodDB.xls")
         val workbook = HSSFWorkbook(inputStream)
         val sheet : Sheet = workbook.getSheetAt(0)
@@ -265,7 +267,8 @@ class HomeFragment : Fragment() {
             val carbohydrateCell = getValueFromCell(row.getCell(4)) // 탄수화물 함량이 있는 열의 인덱스
             val proteinCell = getValueFromCell(row.getCell(5))
             val fatCell = getValueFromCell(row.getCell(6))
-            if (carbohydrateCell != null && carbohydrateCell + carbohydrateG <= recommendedCarbohydrate){
+            if (carbohydrateCell != null && carbohydrateCell + carbohydrateG <= recommendedCarbohydrate
+                        && (proteinCell + proteinG <= recommendedProtein || fatCell + fatG <= recommendedFat) && carbohydrateCell >= proteinCell && carbohydrateCell >= fatCell){
                 val nameCell = row.getCell(1).stringCellValue // 음식 이름
                 val sizeCell = getValueFromCell(row.getCell(2))
                 val kcalCell = getValueFromCell(row.getCell(3))
@@ -282,7 +285,8 @@ class HomeFragment : Fragment() {
         return top3HighCarbohydrateFoods
     }
 
-    private fun filterHighProteinFoods(recommendedProtein: Int, proteinG: Int) : ArrayList<Meal> {
+    private fun filterHighProteinFoods(recommendedCarbohydrate: Int, carbohydrateG: Int,
+                                       recommendedProtein: Int, proteinG: Int, recommendedFat: Int, fatG: Int) : ArrayList<Meal> {
         val inputStream = requireContext().assets.open("foodDB.xls")
         val workbook = HSSFWorkbook(inputStream)
         val sheet : Sheet = workbook.getSheetAt(0)
@@ -292,12 +296,13 @@ class HomeFragment : Fragment() {
         for (rowIndex in 1..sheet.lastRowNum) {
             val row = sheet.getRow(rowIndex)
             val proteinCell = getValueFromCell(row.getCell(5)) // 단백질 함량이 있는 열의 인덱스
-            if (proteinCell != null && proteinCell + proteinG <= recommendedProtein){
+            val carbohydrateCell = getValueFromCell(row.getCell(4))
+            val fatCell = getValueFromCell(row.getCell(6))
+            if (proteinCell != null && proteinCell + proteinG <= recommendedProtein &&
+                (carbohydrateCell + carbohydrateG <= recommendedCarbohydrate || fatCell + fatG <= recommendedFat) && proteinCell >= carbohydrateCell && proteinCell >= fatCell){
                 val nameCell = row.getCell(1).stringCellValue // 음식 이름
                 val sizeCell = getValueFromCell(row.getCell(2))
                 val kcalCell = getValueFromCell(row.getCell(3))
-                val carbohydrateCell = getValueFromCell(row.getCell(4))
-                val fatCell = getValueFromCell(row.getCell(6))
                 highProteinFoods.add(Meal(nameCell, sizeCell, kcalCell, carbohydrateCell, proteinCell, fatCell))
             }
         }
@@ -309,7 +314,8 @@ class HomeFragment : Fragment() {
         val top3HighProteinFoods = ArrayList(sortedByProtein.take(3))
         return top3HighProteinFoods
     }
-    private fun filterHighFatFoods(recommendedFat: Int, fatG: Int) : ArrayList<Meal>{
+    private fun filterHighFatFoods(recommendedCarbohydrate: Int, carbohydrateG: Int,
+                                   recommendedProtein: Int, proteinG: Int, recommendedFat: Int, fatG: Int) : ArrayList<Meal>{
        val inputStream = requireContext().assets.open("foodDB.xls")
        val workbook = HSSFWorkbook(inputStream)
        val sheet : Sheet = workbook.getSheetAt(0)
@@ -319,12 +325,13 @@ class HomeFragment : Fragment() {
        for (rowIndex in 1..sheet.lastRowNum) {
            val row = sheet.getRow(rowIndex)
            val fatCell = getValueFromCell(row.getCell(6)) // 지방 함량이 있는 열의 인덱스
-           if (fatCell != null && fatCell + fatG <= recommendedFat){
+           val carbohydrateCell = getValueFromCell(row.getCell(4))
+           val proteinCell = getValueFromCell(row.getCell(5))
+           if (fatCell != null && (carbohydrateCell + carbohydrateG <= recommendedCarbohydrate
+                       || proteinCell + proteinG <= recommendedProtein) && fatCell + fatG <= recommendedFat && fatCell >= carbohydrateCell && fatCell >= proteinCell){
                val nameCell = row.getCell(1).stringCellValue // 음식 이름
                val sizeCell = getValueFromCell(row.getCell(2))
                val kcalCell = getValueFromCell(row.getCell(3))
-               val carbohydrateCell = getValueFromCell(row.getCell(4))
-               val proteinCell = getValueFromCell(row.getCell(5))
                highFatFoods.add(Meal(nameCell, sizeCell, kcalCell, carbohydrateCell, proteinCell, fatCell))
            }
        }
@@ -332,7 +339,7 @@ class HomeFragment : Fragment() {
        inputStream.close()
 
        // 필터링된 지방 음식 중 상위 3개 리스트만 추린다.
-        val sortedByFat = highFatFoods.sortedByDescending { it.fat }
+        val sortedByFat = highFatFoods.sortedBy { it.fat }
          val top3HighFatFoods = ArrayList(sortedByFat.take(3))
          return top3HighFatFoods
    }
